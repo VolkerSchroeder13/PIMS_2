@@ -5,7 +5,7 @@ from scrapy.loader import ItemLoader
 
 class VossSpider(Spider):
     
-    name = 'Voss'
+    name = 'voss'
     allowed_domains = ['weidezaun.info']
     start_urls = ['http://weidezaun.info/']
 

@@ -5,7 +5,7 @@ from scrapy.loader import ItemLoader
 
 class WaldkraftSpider(Spider):
 
-    name = 'Waldkraft'
+    name = 'waldkraft'
     allowed_domains = ['waldkraft.bio']
     start_urls = ['http://waldkraft.bio/']
 

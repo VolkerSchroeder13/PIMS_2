@@ -5,7 +5,7 @@ from scrapy.loader import ItemLoader
 
 class ArdapcareSpider(Spider):
 
-    name = 'Ardapcare'
+    name = 'ardapcare'
     allowed_domains = ['ardapcare.com']
     start_urls = ['https://ardapcare.com']
 

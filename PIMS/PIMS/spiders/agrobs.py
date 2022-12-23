@@ -5,7 +5,7 @@ from scrapy.loader import ItemLoader
 
 class AgrobsSpider(Spider):
 
-    name = 'Agrobs'
+    name = 'agrobs'
     allowed_domains = ['agrobs.de']
     start_urls = ['https://www.agrobs.de/de/']
 

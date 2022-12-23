@@ -6,7 +6,7 @@ from scrapy.loader import ItemLoader
 
 class AniforteSpider(Spider):
 
-    name = 'Aniforte'
+    name = 'aniforte'
     allowed_domains = ['aniforte.de']
     start_urls = [ 'https://www.aniforte.de' ]
 

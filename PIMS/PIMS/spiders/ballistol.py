@@ -5,7 +5,7 @@ from PIMS.items import Product
 
 class BallistolSpider(Spider):
 
-    name = 'Ballistol'
+    name = 'ballistol'
     allowed_domains = ['ballistol.de']
     start_urls = ['https://ballistol.de/']
 

@@ -138,6 +138,10 @@ class DatabasePipeline:
 
 class ProductPipeline:
 
+    def __init__(self):
+        self.engine = create_engine('mysql+pymysql://root:root@127.0.0.1:3306/pims')
+        self.session = Session(self.engine)
+
     """
     | @Param: Item -> Erhaltenes Produkt mit sämtlichen Attributen
     | 
@@ -199,6 +203,9 @@ class ProductPipeline:
     """
     def price(self, item):
         item['price'] = self.value(item['price'])[0]
+
+    def category(self, item):
+        pass
 
     """
     | @Param: Item -> Erhaltenes Produkt mit sämtlichen Attributen

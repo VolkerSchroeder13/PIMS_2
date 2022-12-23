@@ -1,8 +1,9 @@
-from sqlalchemy import Column, String, Float, Text, Numeric
+from sqlalchemy import Column, String, Float, Text, Numeric, Integer
 from sqlalchemy.ext.declarative import declarative_base
 
 
 Base = declarative_base()
+
 
 """
 | @Param: Base -> Deklariert die Klasse Produkt als Entität
@@ -27,6 +28,7 @@ class Product(Base):
     size = Column(Numeric(10, 2))
     unit = Column(String(255))
     time = Column(String(255))
+    category = Column(String(255))
     """
     | @Var: Shortdescription -> Kurzbeschreibung
     | @Var: Description -> Umfangreiche Beschreibung
@@ -65,3 +67,17 @@ class Product(Base):
     composition_html = Column(Text)
     usage_html = Column(Text)
     safety_html = Column(Text)
+
+
+class Category(Base):
+    __tablename__ = "category"
+
+    id = Column(Integer, primary_key=True)
+    title = Column(String(255))
+
+    aniforte = Column(Text)
+    agrobs = Column(Text)
+    ardapcare = Column(Text)
+    ballistol = Column(Text)
+    voss = Column(Text)
+    waldkraft = Column(Text)
