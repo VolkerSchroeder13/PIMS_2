@@ -3,7 +3,7 @@ from re import findall
 from urllib.parse import urlparse
 from scrapy.pipelines.images import ImagesPipeline
 from sqlmodel import Session, create_engine, select
-from PIMS.models import Product, Base
+from PIMS.models import Product, Category, Base
 
 
 """
@@ -65,6 +65,7 @@ class DatabasePipeline:
         pro.size = item['size']
         pro.unit = item['unit']
         pro.time = item['time']
+        pro.category = item['category']
         pro.short_description = item['short_description']
         pro.description = item['description']
         pro.recommendation = item['recommendation']
@@ -100,6 +101,7 @@ class DatabasePipeline:
                 size = item['size'],
                 unit = item['unit'],
                 time = item['time'],
+                category = item['category'],
                 short_description = item['short_description'],
                 description = item['description'],
                 recommendation = item['recommendation'],
@@ -169,6 +171,9 @@ class ProductPipeline:
     | ist und setzt diese Werte dann im Produkt ein.
     """
     def size(self, item):
+        if item['size'] == None:
+            return
+
         if len(self.value(item['size'])) == 1 and self.unit(item['size']) != None:
             item['unit'] = self.unit(item['size'])
             item['size'] = self.value(item['size'])[0]
@@ -202,10 +207,20 @@ class ProductPipeline:
     | double/float Wert vom Produkt.
     """
     def price(self, item):
+        if item['price'] == None:
+            return
+        
         item['price'] = self.value(item['price'])[0]
 
     def category(self, item):
-        pass
+        if item['category'] == None:
+            return
+
+        result = self.session.exec(select(Category)
+            .where(Category.__table__.c[str(item['brand'][0])].like("%" + str(item['category'][0]) + "%"))).first()
+        
+        if result != None: item['category'] = result.id
+        else: item['category'] = None
 
     """
     | @Param: Item -> Erhaltenes Produkt mit sämtlichen Attributen
@@ -220,4 +235,5 @@ class ProductPipeline:
         self.set_default(item)
         self.price(item)
         self.size(item)
+        self.category(item)
         return item

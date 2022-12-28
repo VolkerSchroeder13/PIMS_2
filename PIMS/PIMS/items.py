@@ -39,6 +39,7 @@ class Product(Item):
     price = Field(input_processor=Map(remove_tags, check_text), output_processor=First())
     time = Field(input_processor=Map(remove_tags, check_text), output_processor=First())
     size = Field(input_processor=Map(remove_tags, check_text), output_processor=First())
+    category = Field()
     unit = Field()
 
     short_description = Field(input_processor=Map(remove_tags, check_text), output_processor=Join())

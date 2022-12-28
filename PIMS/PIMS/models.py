@@ -28,7 +28,7 @@ class Product(Base):
     size = Column(Numeric(10, 2))
     unit = Column(String(255))
     time = Column(String(255))
-    category = Column(String(255))
+    category = Column(Integer)
     """
     | @Var: Shortdescription -> Kurzbeschreibung
     | @Var: Description -> Umfangreiche Beschreibung
