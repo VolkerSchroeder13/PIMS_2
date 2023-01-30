@@ -69,12 +69,17 @@ class Product(Base):
     safety_html = Column(Text)
 
 
+class Selector(Base):
+    __tablename__ = "selector"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    brand = Column(String(255))
+    selector = Column(Text)
+
+
 class Category(Base):
     __tablename__ = "category"
-
     id = Column(Integer, primary_key=True)
     title = Column(String(255))
-
     aniforte = Column(Text)
     agrobs = Column(Text)
     ardapcare = Column(Text)

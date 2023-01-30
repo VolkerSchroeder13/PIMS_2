@@ -3,30 +3,19 @@ from re import findall
 from urllib.parse import urlparse
 from scrapy.pipelines.images import ImagesPipeline
 from sqlmodel import Session, create_engine, select
-from PIMS.models import Product, Category, Base
+from PIMS.models import Product, Category, Selector, Base
 
 
-"""
-| Erweitert die ImagesPipeline von Scrapy mit
-| benutzerdefinierten Funktionen.
-"""
 class ImagePipeline(ImagesPipeline):
 
     """
-    | @Param: Request -> Produktseite mit sämtlichen Informationen
-    | @Param: Item -> Produkt mit sämtlichen Attributen
-    | @Return: Dateipfad für die erstellten Bilder
-    | 
-    | Die Methode file_path erzeugt einen Dateipfad für alle erhaltenen Bilder.
+    | Die Methode file_path erzeugt einen Dateipfad für erhaltende Bilder mit
+    | der gegebenen Produkt-ID.
     """
     def file_path(self, request, response=None, info=None, item=None):
         return item['id'] + '/' + os.path.basename(urlparse(request.url).path) 
 
 
-"""
-| Die Klasse DatabasePipeline ist eine benutzerdefinierte Pipeline, 
-| welche zur Verwaltung (hinzufügen, aktualisieren) von Produkte dient.
-"""
 class DatabasePipeline:
 
     """
@@ -40,10 +29,6 @@ class DatabasePipeline:
         Base.metadata.create_all(self.engine)
 
     """
-    | @Param: Item -> Überprüfendes Produkt
-    | @Return: True -> Produkt existiert
-    | @Return: False -> Produkt existiert nicht
-    | 
     | Diese Methode überprüft ob ein gegebenes Produkt bereits in 
     | Datenbank existiert.
     """
@@ -53,8 +38,6 @@ class DatabasePipeline:
         else: return False
 
     """
-    | @Param: Item -> Aktualisierendes Produkt
-    | 
     | Bei einem bereits vorhandenen Produkt werden alle Werte aktualisiert und gespeichert.
     """
     def update_item(self, item):
@@ -87,9 +70,7 @@ class DatabasePipeline:
         self.session.refresh(pro)
 
     """
-    | @Param: Item -> Hinzufügendes Produkt
-    | 
-    | Es wird ein neues Produkt erstellt und in die Datenbank hinzugefügt.
+    | Es wird ein neues Produkt erstellt und in die Datenbank-Tabelle hinzugefügt.
     """
     def insert_item(self, item):
         self.session.add(
@@ -123,12 +104,9 @@ class DatabasePipeline:
         self.session.commit()
 
     """
-    | @Param: Item -> Erhaltenes Produkt mit sämtlichen Attributen
-    | 
     | Die Methode process_item wird aufgerufen, wenn ein Produkt von
-    | einem Spider gespeichert wird -> Beispiel (yield Product).
-    | Anschließend wird das Produkt auf Duplizität geprüft und darauf
-    | folgend hinzugefügt insert_item oder aktualisiert update_item.
+    | einem Spider gespeichert wird.
+    | Anschließend wird das Produkt auf Duplizität geprüft und gespeichert.
     """
     def process_item(self, item, spider):
         if self.check_item(item) is True:
@@ -145,8 +123,15 @@ class ProductPipeline:
         self.session = Session(self.engine)
 
     """
-    | @Param: Item -> Erhaltenes Produkt mit sämtlichen Attributen
-    | 
+    | Diese Methode überprüft ob ein gegebenes Produkt bereits in 
+    | Datenbank existiert.
+    """
+    def check_item(self, item):
+        result = self.session.exec(select(Selector).where(Selector.selector == item['selector'])).first()
+        if result is None: return True
+        else: return False
+
+    """
     | Die Methode set_item_default setzt alle Werte des übergebenen
     | Item aus einen festgelegten Standartwert.
     """
@@ -155,9 +140,6 @@ class ProductPipeline:
             item.setdefault(field, None)
 
     """
-    | @Param: Text -> Erhaltener Text mit gegebenen Größen
-    | @Return: Liste -> Liefert eine Liste mit allen gefundeten Werten
-    | 
     | Die Methode value findet alle float/double Werte aus einem Text und
     | liefert diese zurück für weitere Verwendungen.
     """
@@ -165,8 +147,6 @@ class ProductPipeline:
         return findall(r'[-+]?(?:\d*\.\d+|\d+)', text.replace(',','.'))
 
     """
-    | @Param: Item -> Erhaltenes Produkt mit sämtlichen Attributen
-    | 
     | Die Methode size überprüft ob eine Größe/Einheit gegeben
     | ist und setzt diese Werte dann im Produkt ein.
     """
@@ -182,12 +162,8 @@ class ProductPipeline:
             item['size'] = None
 
     """
-    | @Param: Unit -> Überprüfender Text mit Einheit
-    | @Return: Einheit -> Einheit die im Text gefunden wurde
-    | @Return None -> Keine Einheit gefunden
-    | 
     | Die Methode überprüft ob eine Einheit im Text gegeben
-    | ist.
+    | ist und gibt diese zurück.
     """
     def unit(self, unit):
         for txt in unit.lower().split():
@@ -201,8 +177,6 @@ class ProductPipeline:
             if txt == 'gramm': return 'Gramm'
 
     """
-    | @Param: Item -> Item mit umzusetzenen Preis 
-    | 
     | Die Methode price setzt den Wert auf den gefundenen
     | double/float Wert vom Produkt.
     """
@@ -212,28 +186,35 @@ class ProductPipeline:
         
         item['price'] = self.value(item['price'])[0]
 
-    def category(self, item):
-        if item['category'] == None:
-            return
-
-        result = self.session.exec(select(Category)
-            .where(Category.__table__.c[str(item['brand'][0])].like("%" + str(item['category'][0]) + "%"))).first()
-        
-        if result != None: item['category'] = result.id
-        else: item['category'] = None
+    """
+    """
+    def selector(self, item):
+        if self.check_item(item) is True:
+            self.session.add(Selector(brand=item['brand'], selector=item['selector']))
+            self.session.commit()
 
     """
-    | @Param: Item -> Erhaltenes Produkt mit sämtlichen Attributen
-    | 
+    """
+    def category(self, item):
+        if item['selector'] == None:
+            return
+        
+        result = self.session.query(Category).filter(
+            getattr(Category, item['brand']).like('%' + item['selector'] + '%')
+        ).first()
+
+        if result != None:
+            item['category'] = result.id
+
+    """
     | Die Methode process_item wird aufgerufen, wenn ein Produkt von
-    | einem Spider gespeichert wird -> Beispiel (yield Product).
-    | Es werden zuerst alle Standartwerte für ein Produkt erstellt mit
-    | dem Aufruf set_item_default.
-    | Anschließend werden Preis/Größe/Einheit validiert und gespeichert.
+    | einem Spider gespeichert wird.
+    | Danach werden die jeweiligen Methoden zur Validierung der Daten aufgerufen.
     """
     def process_item(self, item, spider):
         self.set_default(item)
         self.price(item)
         self.size(item)
+        self.selector(item)
         self.category(item)
         return item

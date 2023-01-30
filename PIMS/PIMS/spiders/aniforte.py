@@ -41,10 +41,10 @@ class AniforteSpider(Spider):
         i.add_css('size', 'div.ProductForm__Variants > div.ProductForm__Option > ul > li > input[checked]::attr(value)')
         i.add_css('time', 'div.ProductMeta > div.price_and_info_container > :nth-child(3)')
         
-        category = response.url.split(self.start_urls[0])[1].split('/')
-        category.pop(len(category) - 1)
-        category = '/'.join(category)
-        i.add_value('category', category)
+        selector = response.url.split(self.start_urls[0])[1].split('/')
+        selector.pop(len(selector) - 1)
+        selector = '/'.join(selector)
+        i.add_value('selector', selector)
 
         i.add_css('short_description', 'ul.ProductMeta__usps')
         i.add_css('description', 'div.Product__Tabs > div > button:contains("Beschreibung") ~ div')
