@@ -49,10 +49,4 @@ class Selector(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     brand = Column(String(255))
     selector = Column(Text)
-
-
-class CategorySelector(Base):
-    __tablename__ = "category_selector"
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    category = Column(Integer, ForeignKey('category.id'))
-    selector = Column(Integer, ForeignKey('selector.id'))
+    category = Column(Integer, ForeignKey(Category.id))

@@ -199,12 +199,14 @@ class ProductPipeline:
         if item['selector'] == None:
             return
         
-        result = self.session.query(Category).filter(
-            getattr(Category, item['brand']).like('%' + item['selector'] + '%')
+        result = self.session.query(Selector).where(
+            Selector.selector == item['selector']
+        ).where(
+            Selector.brand == item['brand']
         ).first()
 
-        if result != None:
-            item['category'] = result.id
+        if result.category is not None:
+            item['category'] = result.category
 
     """
     | Die Methode process_item wird aufgerufen, wenn ein Produkt von
