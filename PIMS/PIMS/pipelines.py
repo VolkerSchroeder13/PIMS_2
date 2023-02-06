@@ -3,7 +3,7 @@ from re import findall
 from urllib.parse import urlparse
 from scrapy.pipelines.images import ImagesPipeline
 from sqlmodel import Session, create_engine, select
-from PIMS.models import Product, Category, Selector, Base
+from PIMS.models import Product, Selector, ProductCategory, Base
 
 
 class ImagePipeline(ImagesPipeline):
@@ -34,8 +34,10 @@ class DatabasePipeline:
     """
     def check_item(self, item):
         result = self.session.exec(select(Product).where(Product.id == item['id'])).first()
-        if result is None: return True
-        else: return False
+        if result is None: 
+            return True
+        else: 
+            return False
 
     """
     | Bei einem bereits vorhandenen Produkt werden alle Werte aktualisiert und gespeichert.
@@ -128,8 +130,10 @@ class ProductPipeline:
     """
     def check_item(self, item):
         result = self.session.exec(select(Selector).where(Selector.selector == item['selector'])).first()
-        if result is None: return True
-        else: return False
+        if result is None: 
+            return True
+        else: 
+            return False
 
     """
     | Die Methode set_item_default setzt alle Werte des übergebenen
@@ -199,14 +203,18 @@ class ProductPipeline:
         if item['selector'] == None:
             return
         
-        result = self.session.query(Selector).where(
+        result = self.session.query(Selector.category).where(
             Selector.selector == item['selector']
         ).where(
             Selector.brand == item['brand']
-        ).first()
+        ).all()
 
-        if result.category is not None:
-            item['category'] = result.category
+        if result is not None:
+            for id in result:
+                category = ProductCategory(product=item['id'], category=id)
+                self.session.add(category)
+                self.session.commit()
+                self.session.refresh(category)
 
     """
     | Die Methode process_item wird aufgerufen, wenn ein Produkt von

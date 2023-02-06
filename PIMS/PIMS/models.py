@@ -16,8 +16,7 @@ class Product(Base):
     size = Column(Numeric(10, 2))
     unit = Column(String(255))
     time = Column(String(255))
-    category = Column(Integer)
-   
+
     short_description = Column(Text)
     description = Column(Text)
     recommendation = Column(Text)
@@ -49,4 +48,11 @@ class Selector(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     brand = Column(String(255))
     selector = Column(Text)
+    category = Column(Integer, ForeignKey(Category.id))
+
+
+class ProductCategory(Base):
+    __tablename__ = "product_category"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    product = Column(Integer, ForeignKey(Product.id))
     category = Column(Integer, ForeignKey(Category.id))
