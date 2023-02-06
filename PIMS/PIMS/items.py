@@ -40,8 +40,6 @@ class Product(Item):
     time = Field(input_processor=Map(remove_tags, check_text), output_processor=First())
     size = Field(input_processor=Map(remove_tags, check_text), output_processor=First())
     unit = Field()
-
-    category = Field()
     selector = Field()
 
     short_description = Field(input_processor=Map(remove_tags, check_text), output_processor=Join())

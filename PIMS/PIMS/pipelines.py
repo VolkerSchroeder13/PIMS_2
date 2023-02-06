@@ -50,7 +50,6 @@ class DatabasePipeline:
         pro.size = item['size']
         pro.unit = item['unit']
         pro.time = item['time']
-        pro.category = item['category']
         pro.short_description = item['short_description']
         pro.description = item['description']
         pro.recommendation = item['recommendation']
@@ -84,7 +83,6 @@ class DatabasePipeline:
                 size = item['size'],
                 unit = item['unit'],
                 time = item['time'],
-                category = item['category'],
                 short_description = item['short_description'],
                 description = item['description'],
                 recommendation = item['recommendation'],
@@ -207,6 +205,8 @@ class ProductPipeline:
             Selector.selector == item['selector']
         ).where(
             Selector.brand == item['brand']
+        ).where(
+            Selector.category != None
         ).all()
 
         if result is not None:

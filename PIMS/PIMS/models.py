@@ -40,6 +40,7 @@ class Product(Base):
 class Category(Base):
     __tablename__ = "category"
     id = Column(Integer, primary_key=True)
+    parent = Column(Integer)
     title = Column(String(255))
 
 
@@ -54,5 +55,5 @@ class Selector(Base):
 class ProductCategory(Base):
     __tablename__ = "product_category"
     id = Column(Integer, primary_key=True, autoincrement=True)
-    product = Column(Integer, ForeignKey(Product.id))
+    product = Column(String(255), ForeignKey(Product.id))
     category = Column(Integer, ForeignKey(Category.id))
