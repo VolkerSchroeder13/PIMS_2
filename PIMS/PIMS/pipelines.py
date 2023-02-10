@@ -191,7 +191,10 @@ class ProductPipeline:
     """
     """
     def selector(self, item):
-        if self.check_item(item) is True:
+        if item['selector'] == None:
+            return
+
+        if self.check_item(item):
             self.session.add(Selector(brand=item['brand'], selector=item['selector']))
             self.session.commit()
 

@@ -8,7 +8,7 @@ class AniforteSpider(Spider):
 
     name = 'aniforte'
     allowed_domains = ['aniforte.de']
-    start_urls = [ 'https://www.aniforte.de' ]
+    start_urls = ['https://www.aniforte.de']
 
     def parse(self, response):
         for category in response.css('div.Header__Wrapper > nav > li > a::attr(href)'):
