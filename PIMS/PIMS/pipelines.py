@@ -13,7 +13,7 @@ class ImagePipeline(ImagesPipeline):
     | der gegebenen Produkt-ID.
     """
     def file_path(self, request, response=None, info=None, item=None):
-        return item['id'] + '/' + os.path.basename(urlparse(request.url).path) 
+        return item['id'] + '/' + item['id'] + '_' + os.path.basename(urlparse(request.url).path) 
 
 
 class DatabasePipeline:
