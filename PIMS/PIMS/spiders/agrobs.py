@@ -30,8 +30,11 @@ class AgrobsSpider(Spider):
         
         i.add_value('brand', self.name)
         i.add_value('id', str(response.url).split('-')[-1].split('/')[0])
+        i.add_css('size', 'li:contains("Handelsform")')
         i.add_css('title', 'h1.itemcardHeadline')
         
+        i.add_css('selector', 'div.breadcrumbWrapper > span > a ::text')
+
         i.add_css('short_description', 'div.itemcardBullets > div:nth-child(1) div:nth-child(3)')
         i.add_css('description', 'div.itemDetailsDescription.beschreibung > div > div')
         i.add_css('recommendation', 'div.itemDetailsDescription.fuetterungsempfehlung > div')

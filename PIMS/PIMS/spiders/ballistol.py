@@ -16,20 +16,12 @@ class BallistolSpider(Spider):
     def parse_category(self, response):
         products = response.css('div.listing--container > div.listing > div > div > div > a::attr(href)')
         for product in products:
-            yield Request(url=response.urljoin(product.get()), callback=self.parse_variation)
+            yield Request(url=response.urljoin(product.get()), callback=self.parse_product)
 
-        if products != []:
-            try: yield Request(url=(response.url).split('?p=')[0]+"?p="+str(int((response.url).split('?p=')[-1])+1), callback=self.parse_category)
-            except: yield Request(url=(response.url).split('?p=')[0]+"?p=1", callback=self.parse_category)
+        next = response.css('a.paging--link::attr(href)')
+        if next is not None:
+            yield Request(url=response.urljoin(next.get()), callback=self.parse_category)
 
-    def parse_variation(self, response):
-        if response.css('form.configurator--form > div > select') != []:
-            for variant in response.css('form.configurator--form > div > select > option::attr(value)'):
-                url = (response.url).split('?')
-                yield Request(url=(url[0]+'?group%5B5%5D='+str(variant.get())+'&'+url[1]), callback=self.parse_product)
-        else: 
-            yield Request(url=response.url, callback=self.parse_product)
-    
     def parse_product(self, response):
         i = ItemLoader(item=Product(), response=response)
         

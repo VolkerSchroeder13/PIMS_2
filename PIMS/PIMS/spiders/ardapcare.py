@@ -38,7 +38,4 @@ class ArdapcareSpider(Spider):
         item.add_css('short_description', 'div.product-single__description > ul')
         item.add_css('short_description_html', 'div.product-single__description > ul')
 
-        for img in response.css('div.grid__item.product-single__media-group > div > div > img::attr("data-src")'):
-            item.add_value('image_urls', response.urljoin(img.get()))
-
         yield item.load_item()

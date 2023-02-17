@@ -16,7 +16,8 @@ DEFAULT_REQUEST_HEADERS = {
 ITEM_PIPELINES = {
     'PIMS.pipelines.ProductPipeline': 1,
     'PIMS.pipelines.DatabasePipeline': 300,
-    'PIMS.pipelines.ImagePipeline': 300,
+    'PIMS.pipelines.ExportPipeline': 300,
+    'PIMS.pipelines.StoragePipeline': 300,
 }
 
 IMAGES_STORE = config.get('PATH')

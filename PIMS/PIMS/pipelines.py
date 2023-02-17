@@ -1,19 +1,27 @@
-import os
-from re import findall
-from urllib.parse import urlparse
-from scrapy.pipelines.images import ImagesPipeline
-from sqlmodel import Session, create_engine, select
 from PIMS.models import Product, Selector, ProductCategory, Base
+from sqlmodel import Session, create_engine, select
+from scrapy.pipelines.images import ImagesPipeline
+from urllib.parse import urlparse
+from re import findall
+import os
 
 
-class ImagePipeline(ImagesPipeline):
+class StoragePipeline(ImagesPipeline):
 
     """
-    | Die Methode file_path erzeugt einen Dateipfad für erhaltende Bilder mit
-    | der gegebenen Produkt-ID.
+    | Die Methode file_path erzeugt einen Dateipfad für erhaltende Bilder.
     """
     def file_path(self, request, response=None, info=None, item=None):
-        return item['id'] + '/' + item['id'] + '_' + os.path.basename(urlparse(request.url).path) 
+        return 'Storage/' + item['brand'] + '/' + item['id'] + '/' + os.path.basename(urlparse(request.url).path) 
+
+
+class ExportPipeline(ImagesPipeline):
+
+    """
+    | Die Methode file_path erzeugt einen Dateipfad für erhaltende Bilder.
+    """
+    def file_path(self, request, response=None, info=None, item=None):
+        return 'Export/' + item['id'] + '_' + os.path.basename(urlparse(request.url).path) 
 
 
 class DatabasePipeline:
