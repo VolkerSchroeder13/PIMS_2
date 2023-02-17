@@ -12,7 +12,7 @@ class StoragePipeline(ImagesPipeline):
     | Die Methode file_path erzeugt einen Dateipfad für erhaltende Bilder.
     """
     def file_path(self, request, response=None, info=None, item=None):
-        return 'Storage/' + item['brand'] + '/' + item['id'] + '/' + os.path.basename(urlparse(request.url).path) 
+        return 'Storage/' + item['id'] + '/' + os.path.basename(urlparse(request.url).path) 
 
 
 class ExportPipeline(ImagesPipeline):
@@ -212,20 +212,19 @@ class ProductPipeline:
         if item['selector'] == None:
             return
         
-        result = self.session.query(Selector.category).where(
+        result = self.session.query(Selector).where(
             Selector.selector == item['selector']
         ).where(
             Selector.brand == item['brand']
         ).where(
             Selector.category != None
-        ).all()
+        ).first()
 
         if result is not None:
-            for id in result:
-                category = ProductCategory(product=item['id'], category=id)
-                self.session.add(category)
-                self.session.commit()
-                self.session.refresh(category)
+            category = ProductCategory(product=item['id'], category=result.category)
+            self.session.add(category)
+            self.session.commit()
+            self.session.refresh(category)
 
     """
     | Die Methode process_item wird aufgerufen, wenn ein Produkt von
