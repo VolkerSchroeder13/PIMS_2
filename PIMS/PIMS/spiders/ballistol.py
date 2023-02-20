@@ -31,6 +31,8 @@ class BallistolSpider(Spider):
         i.add_css('price', 'span.price--content > meta::attr(content)')
         i.add_css('size', 'div.product--configurator > form > div > select > option[selected]')
 
+        i.add_css('selector', 'span.breadcrumb--title')
+
         i.add_css('description', 'div.product--description > div.pro-desc')
         i.add_css('recommendation', 'div.properties--content--section > div.product--properties')
         i.add_css('safety', 'div.safety_instructions--content--section > div > div.si-desc')

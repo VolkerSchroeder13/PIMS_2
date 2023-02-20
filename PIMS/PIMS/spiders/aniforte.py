@@ -19,12 +19,16 @@ class AniforteSpider(Spider):
             yield Request(url=response.urljoin(sub_category.get()), callback=self.parse_subcategory)
 
     def parse_subcategory(self, response):
+        for menu in response.css('ul.sub-menu_active > ul > ul > li > a::attr(href)'):
+            yield Request(url=response.urljoin(menu.get()), callback=self.parse_submenu)
+
+    def parse_submenu(self, response):
         for product in response.css('div.ProductList > div > div > div > a::attr(href)'):
             yield Request(url=response.urljoin(product.get()), callback=self.parse_variation)
 
         next = response.css('div.Pagination__Nav > a[rel=next]::attr(href)')
         if next is not None:
-            yield Request(url=response.urljoin(next.get()), callback=self.parse_subcategory)
+            yield Request(url=response.urljoin(next.get()), callback=self.parse_submenu)
 
     def parse_variation(self, response):
         for product in response.css('div.ProductForm__Option > div > select > option::attr(value)'):
@@ -41,7 +45,7 @@ class AniforteSpider(Spider):
         i.add_css('size', 'div.ProductForm__Variants > div.ProductForm__Option > ul > li > input[checked]::attr(value)')
         i.add_css('time', 'div.ProductMeta > div.price_and_info_container > :nth-child(3)')
         
-        i.add_css('selector', 'a.link_active ::text')
+        i.add_css('selector', 'div.Header__Wrapper a.link_active')
 
         i.add_css('short_description', 'ul.ProductMeta__usps')
         i.add_css('description', 'div.Product__Tabs > div > button:contains("Beschreibung") ~ div')

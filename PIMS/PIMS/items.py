@@ -21,7 +21,7 @@ class Product(Item):
     size = Field(input_processor=Map(remove_tags, check_text), output_processor=First())
     unit = Field()
 
-    selector = Field(output_processor=Join())
+    selector = Field(input_processor=Map(remove_tags, check_text), output_processor=Join())
 
     short_description = Field(input_processor=Map(remove_tags, check_text), output_processor=Join())
     description = Field(input_processor=Map(remove_tags, check_text), output_processor=Join())
