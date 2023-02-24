@@ -1,5 +1,5 @@
-from scrapy import Spider, Request, FormRequest
 from scrapy.loader import ItemLoader
+from scrapy import Spider, Request
 from PIMS.items import Product
 
 

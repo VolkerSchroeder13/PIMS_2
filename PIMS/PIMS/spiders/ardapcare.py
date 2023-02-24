@@ -1,6 +1,6 @@
-from PIMS.items import Product
-from scrapy import Spider, Request
 from scrapy.loader import ItemLoader
+from scrapy import Spider, Request
+from PIMS.items import Product
 
 
 class ArdapcareSpider(Spider):

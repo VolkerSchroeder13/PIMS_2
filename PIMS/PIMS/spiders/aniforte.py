@@ -1,12 +1,13 @@
-import json
-from PIMS.items import Product
-from scrapy import Spider, Request
 from scrapy.loader import ItemLoader
+from scrapy import Spider, Request
+from PIMS.items import Product
+import json
 
 
 class AniforteSpider(Spider):
 
     name = 'aniforte'
+    address = 7008600
     allowed_domains = ['aniforte.de']
     start_urls = ['https://www.aniforte.de']
 
@@ -20,15 +21,15 @@ class AniforteSpider(Spider):
 
     def parse_subcategory(self, response):
         for menu in response.css('ul.sub-menu_active > ul > ul > li > a::attr(href)'):
-            yield Request(url=response.urljoin(menu.get()), callback=self.parse_submenu)
+            yield Request(url=response.urljoin(menu.get()), callback=self.parse_subsubcategory)
 
-    def parse_submenu(self, response):
+    def parse_subsubcategory(self, response):
         for product in response.css('div.ProductList > div > div > div > a::attr(href)'):
             yield Request(url=response.urljoin(product.get()), callback=self.parse_variation)
 
         next = response.css('div.Pagination__Nav > a[rel=next]::attr(href)')
         if next is not None:
-            yield Request(url=response.urljoin(next.get()), callback=self.parse_submenu)
+            yield Request(url=response.urljoin(next.get()), callback=self.parse_subsubcategory)
 
     def parse_variation(self, response):
         for product in response.css('div.ProductForm__Option > div > select > option::attr(value)'):

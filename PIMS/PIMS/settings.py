@@ -1,11 +1,9 @@
 from dotenv import dotenv_values
-
-config = dotenv_values("../../.env")
+from selenium import webdriver
 
 BOT_NAME = 'PIMS'
 SPIDER_MODULES = ['PIMS.spiders']
 NEWSPIDER_MODULE = 'PIMS.spiders'
-
 ROBOTSTXT_OBEY = True
 
 DEFAULT_REQUEST_HEADERS = {
@@ -20,5 +18,6 @@ ITEM_PIPELINES = {
     'PIMS.pipelines.StoragePipeline': 300,
 }
 
-IMAGES_STORE = config.get('PATH')
+config = dotenv_values("../../.env")
 
+IMAGES_STORE = config.get('PATH')

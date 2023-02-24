@@ -14,6 +14,7 @@ def check_text(text):
 
 class Product(Item):
     brand = Field()
+    address = Field()
     id = Field(input_processor=Map(remove_tags, check_text), output_processor=First())
     title = Field(input_processor=Map(remove_tags, check_text), output_processor=First())
     price = Field(input_processor=Map(remove_tags, check_text), output_processor=First())
