@@ -1,5 +1,4 @@
 from dotenv import dotenv_values
-from selenium import webdriver
 
 BOT_NAME = 'PIMS'
 SPIDER_MODULES = ['PIMS.spiders']

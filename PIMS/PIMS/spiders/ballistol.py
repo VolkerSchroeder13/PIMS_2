@@ -6,17 +6,18 @@ from PIMS.items import Product
 class BallistolSpider(Spider):
 
     name = 'ballistol'
+    address = 0
     allowed_domains = ['ballistol.de']
     start_urls = ['https://ballistol.de/']
 
     def parse(self, response):
-        for category in response.css('div.menu--container:nth-child(2) > div.content--wrapper > ul > li > a::attr(href)'):
-            yield Request(url=response.urljoin(category.get()), callback=self.parse_category)
+        for item in response.css('div.menu--container:nth-child(2) > div.content--wrapper > ul > li > a::attr(href)'):
+            yield Request(url=response.urljoin(item.get()), callback=self.parse_category)
 
     def parse_category(self, response):
-        products = response.css('div.listing--container > div.listing > div > div > div > a::attr(href)')
-        for product in products:
-            yield Request(url=response.urljoin(product.get()), callback=self.parse_product)
+        items = response.css('div.listing--container > div.listing > div > div > div > a::attr(href)')
+        for item in items:
+            yield Request(url=response.urljoin(item.get()), callback=self.parse_product)
 
         next = response.css('a.paging--link::attr(href)')
         if next is not None:

@@ -1,28 +1,40 @@
-import json
+from PIMS.spiders.base import BaseSpider
 from scrapy.loader import ItemLoader
-from scrapy import FormRequest, Spider, Request
+from scrapy import Request, Item
 from PIMS.items import Product
 
 
-class AtcomSpider(Spider):
+class AtcomSpider(BaseSpider):
 
     name = 'atcom'
+    address = 0
     allowed_domains = ['atcomhorse.de']
-    start_urls = ['https://www.atcomhorse.de/p/atcom-arthro-sport/584260']
+    start_urls = ['https://www.atcomhorse.de']
 
     def parse(self, response):
-        yield FormRequest(
-            url="https://www.atcomhorse.de/detail/caa87d4b43c44bb788d9d323b02d3c3e/switch",
-            formdata={
-                "options": "%7B%223f84f4a1f9cf42bf960b85c3937ffff5%22%3A%22aaf54fa88dc6431da54d50b08b91130f%22%7D",
-                "switched": "3f84f4a1f9cf42bf960b85c3937ffff5"
-            },
-            method='GET',
-            callback=self.parse_test
-        )
-   
-    def parse_test(self, response):
-        yield Request(url=json.loads(response.text)['url'], callback=self.test)
+        for item in response.css('nav.main-navigation-menu > a::attr(href)'):
+            yield Request(url=item.get(), callback=self.parse_category)
 
-    def test(self, response):
-        print(response.css('span.product-detail-ordernumber::text').get())
+    def parse_category(self, response):
+        for item in response.css('div.product-info > a::attr(href)'):
+            yield Request(url=item.get(), callback=self.parse_variation)
+
+    def parse_variation(self, response):
+        items = response.css('select.product-configurator-select > option::attr(value)')
+
+        for item in items:
+            yield self.parse_product(
+                self.get_page(
+                    url=response.url, 
+                    select='select.product-configurator-select', 
+                    option=item.get()
+                )
+            )
+
+    def parse_product(self, response):
+        i = ItemLoader(item=Product(), response=response)
+        
+        i.add_value('brand', self.name)
+        i.add_css('id', 'span.product-detail-ordernumber')
+
+        yield i.load_item()

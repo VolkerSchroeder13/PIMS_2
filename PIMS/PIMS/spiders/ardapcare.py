@@ -5,6 +5,7 @@ from PIMS.items import Product
 
 class ArdapcareSpider(Spider):
 
+    address = 0
     name = 'ardapcare'
     allowed_domains = ['ardapcare.com']
     start_urls = ['https://ardapcare.com']

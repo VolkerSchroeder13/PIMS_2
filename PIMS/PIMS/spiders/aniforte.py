@@ -12,28 +12,28 @@ class AniforteSpider(Spider):
     start_urls = ['https://www.aniforte.de']
 
     def parse(self, response):
-        for category in response.css('div.Header__Wrapper > nav > li > a::attr(href)'):
-            yield Request(url=response.urljoin(category.get()), callback=self.parse_category)
+        for item in response.css('div.Header__Wrapper > nav > li > a::attr(href)'):
+            yield Request(url=response.urljoin(item.get()), callback=self.parse_category)
 
     def parse_category(self, response):
-        for sub_category in response.css('div.Header__Wrapper > nav > ul.sub-menu_active > li > a::attr(href)'):
-            yield Request(url=response.urljoin(sub_category.get()), callback=self.parse_subcategory)
+        for item in response.css('div.Header__Wrapper > nav > ul.sub-menu_active > li > a::attr(href)'):
+            yield Request(url=response.urljoin(item.get()), callback=self.parse_subcategory)
 
     def parse_subcategory(self, response):
-        for menu in response.css('ul.sub-menu_active > ul > ul > li > a::attr(href)'):
-            yield Request(url=response.urljoin(menu.get()), callback=self.parse_subsubcategory)
+        for item in response.css('ul.sub-menu_active > ul > ul > li > a::attr(href)'):
+            yield Request(url=response.urljoin(item.get()), callback=self.parse_subsubcategory)
 
     def parse_subsubcategory(self, response):
-        for product in response.css('div.ProductList > div > div > div > a::attr(href)'):
-            yield Request(url=response.urljoin(product.get()), callback=self.parse_variation)
+        for item in response.css('div.ProductList > div > div > div > a::attr(href)'):
+            yield Request(url=response.urljoin(item.get()), callback=self.parse_variation)
 
         next = response.css('div.Pagination__Nav > a[rel=next]::attr(href)')
         if next is not None:
             yield Request(url=response.urljoin(next.get()), callback=self.parse_subsubcategory)
 
     def parse_variation(self, response):
-        for product in response.css('div.ProductForm__Option > div > select > option::attr(value)'):
-            yield Request(url=(response.url+'?variant='+product.get()), callback=self.parse_product)
+        for item in response.css('div.ProductForm__Option > div > select > option::attr(value)'):
+            yield Request(url=(response.url+'?variant='+item.get()), callback=self.parse_product)
 
     def parse_product(self, response):
         i = ItemLoader(item=Product(), response=response)
