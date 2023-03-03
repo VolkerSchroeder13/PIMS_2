@@ -9,6 +9,7 @@ Base = declarative_base()
 class Product(Base):
     __tablename__ = "product"
     
+    address = Column(String(255))
     brand = Column(String(255))
     id = Column(String(255), primary_key=True)
     title = Column(String(255))

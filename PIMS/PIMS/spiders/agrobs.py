@@ -6,7 +6,7 @@ from PIMS.items import Product
 class AgrobsSpider(Spider):
 
     name = 'agrobs'
-    address = 0
+    address = '7000083'
     allowed_domains = ['agrobs.de']
     start_urls = ['https://www.agrobs.de/de/']
 
@@ -29,6 +29,7 @@ class AgrobsSpider(Spider):
     def parse_product(self, response):
         i = ItemLoader(item=Product(), response=response)
         
+        i.context['prefix'] = 'AG'
         i.add_value('brand', self.name)
         i.add_value('id', str(response.url).split('-')[-1].split('/')[0])
         i.add_css('size', 'li:contains("Handelsform")')

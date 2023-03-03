@@ -7,7 +7,7 @@ from PIMS.items import Product
 class AtcomSpider(BaseSpider):
 
     name = 'atcom'
-    address = 0
+    address = '7018700B6'
     allowed_domains = ['atcomhorse.de']
     start_urls = ['https://www.atcomhorse.de']
 
@@ -24,7 +24,7 @@ class AtcomSpider(BaseSpider):
 
         for item in items:
             yield self.parse_product(
-                self.get_page(
+                response=self.get_page(
                     url=response.url, 
                     select='select.product-configurator-select', 
                     option=item.get()
@@ -34,6 +34,7 @@ class AtcomSpider(BaseSpider):
     def parse_product(self, response):
         i = ItemLoader(item=Product(), response=response)
         
+        i.context['prefix'] = 'AT'
         i.add_value('brand', self.name)
         i.add_css('id', 'span.product-detail-ordernumber')
 

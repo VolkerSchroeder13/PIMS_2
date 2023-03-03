@@ -6,7 +6,7 @@ from PIMS.items import Product
 class BallistolSpider(Spider):
 
     name = 'ballistol'
-    address = 0
+    address = '7025200'
     allowed_domains = ['ballistol.de']
     start_urls = ['https://ballistol.de/']
 
@@ -26,6 +26,7 @@ class BallistolSpider(Spider):
     def parse_product(self, response):
         i = ItemLoader(item=Product(), response=response)
         
+        i.context['prefix'] = 'BA'
         i.add_value('brand', self.name)
         i.add_css('id', 'span.entry--content')
         i.add_css('title', 'h1.product--title')

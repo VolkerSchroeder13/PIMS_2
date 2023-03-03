@@ -5,8 +5,8 @@ from PIMS.items import Product
 
 class ArdapcareSpider(Spider):
 
-    address = 0
     name = 'ardapcare'
+    address = '7025100'
     allowed_domains = ['ardapcare.com']
     start_urls = ['https://ardapcare.com']
 
@@ -27,16 +27,17 @@ class ArdapcareSpider(Spider):
             yield Request(url=(response.url+'/?variant='+product.get()), callback=self.parse_product)
 
     def parse_product(self, response):
-        item = ItemLoader(item=Product(), response=response)
+        i = ItemLoader(item=Product(), response=response)
 
-        item.add_value('brand', self.name)
-        item.add_css('id', 'span.variant-sku')
-        item.add_css('title', 'h1.product-single__title')
-        item.add_css('price', 'span.price-item--regular')
-        item.add_css('time', 'div.product-single__description > p')
-        item.add_css('size', 'select.single-option-selector > option[selected]::attr(value)')
+        i.context['prefix'] = 'AR'
+        i.add_value('brand', self.name)
+        i.add_css('id', 'span.variant-sku')
+        i.add_css('title', 'h1.product-single__title')
+        i.add_css('price', 'span.price-item--regular')
+        i.add_css('time', 'div.product-single__description > p')
+        i.add_css('size', 'select.single-option-selector > option[selected]::attr(value)')
 
-        item.add_css('short_description', 'div.product-single__description > ul')
-        item.add_css('short_description_html', 'div.product-single__description > ul')
+        i.add_css('short_description', 'div.product-single__description > ul')
+        i.add_css('short_description_html', 'div.product-single__description > ul')
 
-        yield item.load_item()
+        yield i.load_item()

@@ -21,5 +21,6 @@ class BaseSpider(Spider):
         try:
             sel = Select(self.driver.find_element(By.CSS_SELECTOR, select))
             sel.select_by_value(option)
+            self.driver.implicitly_wait(5)
             return Select(self.driver.page_source)
         except: pass
