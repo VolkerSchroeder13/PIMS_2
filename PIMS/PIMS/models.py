@@ -58,3 +58,20 @@ class ProductCategory(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     product = Column(String(255), ForeignKey(Product.id))
     category = Column(Integer, ForeignKey(Category.id))
+
+class Image(Base):
+    __tablename__ = "image"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    product = Column(String(255), ForeignKey(Product.id))
+    image_1 = Column(String(255))
+    image_2 = Column(String(255)) 
+    image_3 = Column(String(255)) 
+    image_4 = Column(String(255)) 
+    image_5 = Column(String(255)) 
+    image_6 = Column(String(255)) 
+    image_7 = Column(String(255)) 
+    image_8 = Column(String(255)) 
+    image_9 = Column(String(255)) 
+    image_10 = Column(String(255)) 
+    image_11 = Column(String(255)) 
+    image_12 = Column(String(255))

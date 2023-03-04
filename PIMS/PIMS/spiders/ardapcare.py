@@ -30,6 +30,7 @@ class ArdapcareSpider(Spider):
         i = ItemLoader(item=Product(), response=response)
 
         i.context['prefix'] = 'AR'
+        i.add_value('address', self.address)
         i.add_value('brand', self.name)
         i.add_css('id', 'span.variant-sku')
         i.add_css('title', 'h1.product-single__title')

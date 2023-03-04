@@ -30,6 +30,7 @@ class AgrobsSpider(Spider):
         i = ItemLoader(item=Product(), response=response)
         
         i.context['prefix'] = 'AG'
+        i.add_value('address', self.address)
         i.add_value('brand', self.name)
         i.add_value('id', str(response.url).split('-')[-1].split('/')[0])
         i.add_css('size', 'li:contains("Handelsform")')

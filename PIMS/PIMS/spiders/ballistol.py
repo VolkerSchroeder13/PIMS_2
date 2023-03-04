@@ -27,6 +27,7 @@ class BallistolSpider(Spider):
         i = ItemLoader(item=Product(), response=response)
         
         i.context['prefix'] = 'BA'
+        i.add_value('address', self.address)
         i.add_value('brand', self.name)
         i.add_css('id', 'span.entry--content')
         i.add_css('title', 'h1.product--title')

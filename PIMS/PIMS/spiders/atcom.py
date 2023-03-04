@@ -35,6 +35,7 @@ class AtcomSpider(BaseSpider):
         i = ItemLoader(item=Product(), response=response)
         
         i.context['prefix'] = 'AT'
+        i.add_value('address', self.address)
         i.add_value('brand', self.name)
         i.add_css('id', 'span.product-detail-ordernumber')
 
