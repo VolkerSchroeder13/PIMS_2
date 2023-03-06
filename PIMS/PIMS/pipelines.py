@@ -1,4 +1,4 @@
-from PIMS.models import Product, Selector, ProductCategory, Base
+from PIMS.models import Product, Selector, ProductCategory, Image, Base
 from sqlmodel import Session, create_engine, select
 from scrapy.pipelines.images import ImagesPipeline
 from urllib.parse import urlparse
@@ -17,20 +17,61 @@ class StoragePipeline(ImagesPipeline):
 
 class ExportPipeline(ImagesPipeline):
 
-    """
-    | Die Methode file_path erzeugt einen Dateipfad für erhaltende Bilder.
-    """
+    def get_image(self, images, index):
+        if len(images) > index:
+            return images[index]
+        else: 
+            return None
+
     def file_path(self, request, response=None, info=None, item=None):
         return 'Export/' + item['id'] + '_' + os.path.basename(urlparse(request.url).path)
-    
+
     def item_completed(self, results, item, info):
-        image_paths = [x['path'] for ok, x in results if ok]
-
+        images = [x['path'] for ok, x in results if ok]
         
+        for i in range(len(images)):
+            images[i] = images[i].replace('Export/', '')
 
-        f = open("./test.txt", "a")
-        f.write(str(image_paths) + "\n")
-        f.close()
+        session = Session(create_engine('mysql+pymysql://root:root@127.0.0.1:3306/pims'))
+        result = session.exec(select(Image).where(Image.product == item['id'])).first()        
+
+        if result is None:
+            session.add(
+                Image(
+                    product=item['id'],
+                    image_1=self.get_image(images, 0),
+                    image_2=self.get_image(images, 1),
+                    image_3=self.get_image(images, 2),
+                    image_4=self.get_image(images, 3),
+                    image_5=self.get_image(images, 4),
+                    image_6=self.get_image(images, 5),
+                    image_7=self.get_image(images, 6),
+                    image_8=self.get_image(images, 7),
+                    image_9=self.get_image(images, 8),
+                    image_10=self.get_image(images, 9),
+                    image_11=self.get_image(images, 10),
+                    image_12=self.get_image(images, 11)
+                )
+            )
+            session.commit()
+        else:
+            result.image_1=self.get_image(images, 0)
+            result.image_2=self.get_image(images, 1)
+            result.image_3=self.get_image(images, 2)
+            result.image_4=self.get_image(images, 3)
+            result.image_5=self.get_image(images, 4)
+            result.image_6=self.get_image(images, 5)
+            result.image_7=self.get_image(images, 6)
+            result.image_8=self.get_image(images, 7)
+            result.image_9=self.get_image(images, 8)
+            result.image_10=self.get_image(images, 9)
+            result.image_11=self.get_image(images, 10)
+            result.image_12=self.get_image(images, 11)
+
+            session.add(result)
+            session.commit()
+            session.refresh(result)
+
         return item
 
 
@@ -61,35 +102,35 @@ class DatabasePipeline:
     | Bei einem bereits vorhandenen Produkt werden alle Werte aktualisiert und gespeichert.
     """
     def update_item(self, item):
-        pro = self.session.exec(select(Product).where(Product.id == item['id'])).one()
+        result = self.session.exec(select(Product).where(Product.id == item['id'])).one()
         
-        pro.brand = item['brand']
-        pro.address = item['address']
-        pro.title = item['title']
-        pro.price = item['price']
-        pro.size = item['size']
-        pro.unit = item['unit']
-        pro.time = item['time']
-        pro.short_description = item['short_description']
-        pro.description = item['description']
-        pro.recommendation = item['recommendation']
-        pro.composition = item['composition']    
-        pro.usage = item['usage']
-        pro.safety = item['safety']
-        pro.recommendation_title = item['recommendation_title']
-        pro.composition_title = item['composition_title']
-        pro.usage_title = item['usage_title']
-        pro.safety_title = item['safety_title']
-        pro.short_description_html = item['short_description_html']
-        pro.description_html = item['description_html']
-        pro.recommendation_html = item['recommendation_html']
-        pro.composition_html = item['composition_html']
-        pro.usage_html = item['usage_html']
-        pro.safety_html = item['safety_html']
+        result.brand = item['brand']
+        result.address = item['address']
+        result.title = item['title']
+        result.price = item['price']
+        result.size = item['size']
+        result.unit = item['unit']
+        result.time = item['time']
+        result.short_description = item['short_description']
+        result.description = item['description']
+        result.recommendation = item['recommendation']
+        result.composition = item['composition']    
+        result.usage = item['usage']
+        result.safety = item['safety']
+        result.recommendation_title = item['recommendation_title']
+        result.composition_title = item['composition_title']
+        result.usage_title = item['usage_title']
+        result.safety_title = item['safety_title']
+        result.short_description_html = item['short_description_html']
+        result.description_html = item['description_html']
+        result.recommendation_html = item['recommendation_html']
+        result.composition_html = item['composition_html']
+        result.usage_html = item['usage_html']
+        result.safety_html = item['safety_html']
 
-        self.session.add(pro)
+        self.session.add(result)
         self.session.commit()
-        self.session.refresh(pro)
+        self.session.refresh(result)
 
     """
     | Es wird ein neues Produkt erstellt und in die Datenbank-Tabelle hinzugefügt.

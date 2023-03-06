@@ -6,13 +6,14 @@ from scrapy import Item, Field
 
 
 def check_text(text):
-    val = ['  ', '\n', '\r', '\t', '®', '&amp']
+    val = ['  ', '\n', '\r', '\t', ';', '®', '&amp']
     for x in val:
         text = text.replace(x, '')
     return text
 
 def check_prefix(id, loader_context):
     return loader_context.get('prefix') + id
+
 
 class Product(Item):
     brand = Field()
