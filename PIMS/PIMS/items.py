@@ -11,11 +11,8 @@ def check_text(text):
         text = text.replace(x, '')
     return text
 
-def check_prefix(id, context):
-    if context.get('prefix') is not None:
-        return context.get('prefix') + id
-    else:
-        return id
+def check_prefix(id, loader_context):
+    return loader_context.get('prefix') + id
 
 class Product(Item):
     brand = Field()

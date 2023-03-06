@@ -21,7 +21,17 @@ class ExportPipeline(ImagesPipeline):
     | Die Methode file_path erzeugt einen Dateipfad für erhaltende Bilder.
     """
     def file_path(self, request, response=None, info=None, item=None):
-        return 'Export/' + item['id'] + '_' + os.path.basename(urlparse(request.url).path) 
+        return 'Export/' + item['id'] + '_' + os.path.basename(urlparse(request.url).path)
+    
+    def item_completed(self, results, item, info):
+        image_paths = [x['path'] for ok, x in results if ok]
+
+        
+
+        f = open("./test.txt", "a")
+        f.write(str(image_paths) + "\n")
+        f.close()
+        return item
 
 
 class DatabasePipeline:

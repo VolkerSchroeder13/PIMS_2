@@ -39,6 +39,7 @@ class AniforteSpider(Spider):
         i = ItemLoader(item=Product(), response=response)
         
         data = json.loads(response.css('script[type="application/ld+json"]::text').get())
+        i.context['prefix'] = ''
         i.add_value('address', self.address)
         i.add_value('brand', self.name)
         i.add_value('id', data['sku'])
