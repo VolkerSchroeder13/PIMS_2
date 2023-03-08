@@ -1,7 +1,7 @@
 from PIMS.spiders.base import BaseSpider
 from scrapy.loader import ItemLoader
-from scrapy import Request, Item
 from PIMS.items import Product
+from scrapy import Request
 
 
 class AtcomSpider(BaseSpider):
@@ -23,13 +23,12 @@ class AtcomSpider(BaseSpider):
         items = response.css('select.product-configurator-select > option::attr(value)')
 
         for item in items:
-            yield self.parse_product(
-                response=self.get_page(
-                    url=response.url, 
-                    select='select.product-configurator-select', 
-                    option=item.get()
-                )
+            url = self.get_page(
+                url=response.url, 
+                select='select.product-configurator-select', 
+                option=item.get()
             )
+            yield Request(url=url, callback=self.parse_product)
 
     def parse_product(self, response):
         i = ItemLoader(item=Product(), response=response)
