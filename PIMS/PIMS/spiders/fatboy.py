@@ -1,9 +1,10 @@
+from PIMS.PIMS.spiders.base import BaseSpider
 from scrapy.loader import ItemLoader
-from scrapy import Spider, Request
 from PIMS.items import Product
+from scrapy import Request
 
 
-class FatboySpider(Spider):
+class FatboySpider(BaseSpider):
 
     name = 'fatboy'
     address = '7022600'
@@ -11,10 +12,14 @@ class FatboySpider(Spider):
     start_urls = ['https://www.fatboy.com/de-de']
 
     def parse(self, response):
+        response = self.page(response.url)
+        
         for category in response.css('nav.navigation--desktop > ul > li > a::attr(href)'):
             yield Request(url=response.urljoin(category.get()), callback=self.parse_category)
 
     def parse_category(self, response):
+        response = self.page(response.url)
+        
         for product in response.css('ul.grid > li > div > a::attr(href)'):
             yield Request(url=response.urljoin(product.get()), callback=self.parse_variation)
 
@@ -23,6 +28,8 @@ class FatboySpider(Spider):
             yield Request(url=response.urljoin(next.get()), callback=self.parse_category)
 
     def parse_variation(self, response):
+        response = self.page(response.url)
+        
         for product in response.css('select.product-form__variants > option::attr(value)'):
             yield Request(url=(response.url+'/?variant='+product.get()), callback=self.parse_product)
 
@@ -30,6 +37,5 @@ class FatboySpider(Spider):
         i = ItemLoader(item=Product(), response=response)
 
         i.context['prefix'] = 'FB'
-
 
         yield i.load_item()

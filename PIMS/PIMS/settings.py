@@ -13,8 +13,8 @@ DEFAULT_REQUEST_HEADERS = {
 ITEM_PIPELINES = {
     'PIMS.pipelines.ProductPipeline': 1,
     'PIMS.pipelines.DatabasePipeline': 300,
-    #'PIMS.pipelines.ExportPipeline': 300,
-    #'PIMS.pipelines.StoragePipeline': 300,
+    'PIMS.pipelines.ExportPipeline': 300,
+    'PIMS.pipelines.StoragePipeline': 300,
 }
 
 config = dotenv_values("../../.env")
