@@ -1,37 +1,16 @@
-from selenium.webdriver.edge.options import Options
-from selenium.webdriver.support.ui import Select
-from selenium.webdriver.common.by import By
-from selenium.webdriver import Edge
-from dotenv import dotenv_values
-from scrapy import Spider
-from time import sleep
-import logging
+from playwright.sync_api import sync_playwright
+from scrapy import Spider, Selector
 
 
 class BaseSpider(Spider):
 
     def __init__(self):
         super().__init__()
-
-        self.config = dotenv_values("../../.env")
-
-        self.options = Options()
-        self.options.add_argument("--headless=new")
-        
-        self.driver = Edge(
-            executable_path=self.config.get('DRIVER'), 
-            options=self.options
-        )
-
-        logging.getLogger('selenium').setLevel(logging.WARNING)
-
-    def get_page(self, url, select, option):
-        self.driver.get(url)
-        
-        page = Select(self.driver.find_element(By.CSS_SELECTOR, select))
-        page.select_by_value(option)
-        
-        sleep(5)
-
-        return self.driver.current_url
-       
+ 
+    def next(self, url, select, option):
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=False)
+            page = browser.new_page()
+            page.goto(url)
+            page.select_option(selector=select, value=option)
+            return Selector(text=page.content())

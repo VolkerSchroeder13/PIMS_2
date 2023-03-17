@@ -23,6 +23,9 @@ class BallistolSpider(Spider):
         if next is not None:
             yield Request(url=response.urljoin(next.get()), callback=self.parse_category)
 
+    def parse_variation(self, resposne):
+        pass
+
     def parse_product(self, response):
         i = ItemLoader(item=Product(), response=response)
         

@@ -18,7 +18,7 @@ def check_prefix(id, loader_context):
 class Product(Item):
     brand = Field()
     address = Field()
-    id = Field(input_processor=Map(remove_tags, check_prefix), output_processor=First())
+    id = Field(input_processor=Map(remove_tags, check_text, check_prefix), output_processor=First())
     title = Field(input_processor=Map(remove_tags, check_text), output_processor=First())
     price = Field(input_processor=Map(remove_tags, check_text), output_processor=First())
     time = Field(input_processor=Map(remove_tags, check_text), output_processor=First())
