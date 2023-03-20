@@ -21,11 +21,11 @@ class AtcomSpider(BaseSpider):
 
     def parse_variation(self, response):
         for item in response.css('div.product-detail-configurator-options > select > option::attr(value)'):
-            result = self.variation(
+            result = self.select(
                 url=response.url, 
                 select='div.product-detail-configurator-options > select', 
                 option=item.get(),
-                delay=3
+                delay=5
             )
             yield self.parse_product(response=result)
             
@@ -55,5 +55,8 @@ class AtcomSpider(BaseSpider):
         i.add_css('description_html', 'div[id="description-tab-pane"]')
         i.add_css('recommendation_html', 'div[id="feeding-recommendation-tab-pane"]')
         i.add_css('composition_html', 'div[id="product-detail-tab-pane"]')
+
+        for img in response.css('div.gallery-slider-item-container > div > img::attr(data-src)'):
+            i.add_value('image_urls', response.urljoin(img.get()))
 
         return i.load_item()

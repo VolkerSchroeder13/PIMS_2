@@ -7,7 +7,7 @@ constantly==15.1.0
 cryptography==37.0.4
 cssselect==1.1.0
 filelock==3.7.1
-greenlet==1.1.2
+greenlet==2.0.1
 hyperlink==21.0.0
 idna==3.3
 incremental==21.3.0
@@ -17,12 +17,14 @@ jmespath==1.0.1
 lxml==4.9.1
 parsel==1.6.0
 Pillow==9.2.0
+playwright==1.31.1
 Protego==0.2.1
 pyasn1==0.4.8
 pyasn1-modules==0.2.8
 pycparser==2.21
 pydantic==1.9.1
 PyDispatcher==2.0.5
+pyee==9.0.4
 PyMySQL==1.0.2
 pyOpenSSL==22.0.0
 python-dotenv==0.21.1
