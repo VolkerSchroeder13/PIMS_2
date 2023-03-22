@@ -15,9 +15,10 @@ class BaseSpider(Spider):
             page = browser.new_page()
             page.goto(url)
             sleep(delay)
+            content = page.content()
             page.close
 
-            return Selector(text=page.content())
+            return Selector(text=content)
     
     def select(self, url, select, option, delay):
         with sync_playwright() as p:
@@ -28,9 +29,10 @@ class BaseSpider(Spider):
             page.select_option(selector=select, value=option)
             
             sleep(delay)
+            content = page.content()
             page.close()
             
-            return Selector(text=page.content())
+            return Selector(text=content)
         
     def click(self, url, buttons, delay):
         with sync_playwright() as p:
@@ -40,9 +42,10 @@ class BaseSpider(Spider):
             page.goto(url)
             
             for button in buttons:
-                page.get_by_text(button, exact=True).click()
+                page.get_by_role('button').get_by_text(button).click()
                 sleep(delay)
                 
+            content = page.content()
             page.close()
 
-            return Selector(text=page.content())
+            return Selector(text=content)

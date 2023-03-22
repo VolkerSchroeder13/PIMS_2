@@ -104,6 +104,7 @@ class DatabasePipeline:
     def update_item(self, item):
         result = self.session.exec(select(Product).where(Product.id == item['id'])).one()
         
+        result.ean = item['ean']
         result.brand = item['brand']
         result.address = item['address']
         result.title = item['title']
@@ -140,7 +141,8 @@ class DatabasePipeline:
             Product(
                 brand = item['brand'],
                 address = item['address'],
-                id = item['id'], 
+                id = item['id'],
+                ean = item['ean'],
                 title = item['title'],
                 price = item['price'],
                 size = item['size'],

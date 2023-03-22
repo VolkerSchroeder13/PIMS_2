@@ -12,6 +12,7 @@ class Product(Base):
     address = Column(String(255))
     brand = Column(String(255))
     id = Column(String(255), primary_key=True)
+    ean = Column(String(255))
     title = Column(String(255))
     price = Column(Float)
     size = Column(Numeric(10, 2))

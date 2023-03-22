@@ -1,9 +1,10 @@
+from PIMS.spiders.base import BaseSpider
 from scrapy.loader import ItemLoader
-from scrapy import Spider, Request
 from PIMS.items import Product
+from scrapy import Request
 
 
-class BallistolSpider(Spider):
+class BallistolSpider(BaseSpider):
 
     name = 'ballistol'
     address = '7025200'
@@ -17,17 +18,28 @@ class BallistolSpider(Spider):
     def parse_category(self, response):
         items = response.css('div.listing--container > div.listing > div > div > div > a::attr(href)')
         for item in items:
-            yield Request(url=response.urljoin(item.get()), callback=self.parse_product)
+            yield Request(url=response.urljoin(item.get()), callback=self.parse_variation)
 
         next = response.css('a.paging--link::attr(href)')
         if next is not None:
             yield Request(url=response.urljoin(next.get()), callback=self.parse_category)
 
-    def parse_variation(self, resposne):
-        pass
+    def parse_variation(self, response):
+        page = self.page(url=response.url, delay=5)
+
+        if response.css('div.product--configurator select').get() is not None:
+            for item in response.css('div.product--configurator select option::attr(value)'):
+                self.select(
+                    url=response.url,
+                    select='div.product--configurator select',
+                    option=item.get(),
+                    delay=10
+                )
+        
+        yield self.parse_product(response=page)
 
     def parse_product(self, response):
-        i = ItemLoader(item=Product(), response=response)
+        i = ItemLoader(item=Product(), selector=response)
         
         i.context['prefix'] = 'BA'
         i.add_value('address', self.address)
@@ -53,5 +65,5 @@ class BallistolSpider(Spider):
         for img in response.css('div.image-slider--slide > div > span > span > img::attr(srcset)'):
             i.add_value('image_urls', img.get())
 
-        yield i.load_item()
+        return i.load_item()
 
