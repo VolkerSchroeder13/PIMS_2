@@ -39,6 +39,7 @@ class ExportPipeline(ImagesPipeline):
             session.add(
                 Image(
                     product=item['id'],
+                    brand=item['brand'],
                     image_1=self.get_image(images, 0),
                     image_2=self.get_image(images, 1),
                     image_3=self.get_image(images, 2),
@@ -214,19 +215,23 @@ class ProductPipeline:
     | liefert diese zurück für weitere Verwendungen.
     """
     def value(self, text):
-        return findall(r'[-+]?(?:\d*\.\d+|\d+)', text.replace(',','.'))
+        text = text.replace(',', '.')
+        return findall(r'[-+]?(?:\d*\.\d+|\d+)', text)[0]
 
     """
     | Die Methode size überprüft ob eine Größe/Einheit gegeben
     | ist und setzt diese Werte dann im Produkt ein.
     """
     def size(self, item):
-        if item['size'] == None:
+        if item['size'] is None:
             return
 
-        if len(self.value(item['size'])) == 1 and self.unit(item['size']) != None:
-            item['unit'] = self.unit(item['size'])
-            item['size'] = self.value(item['size'])[0]
+        size = self.value(item['size'])
+        unit = self.unit(item['size'])
+
+        if size != None and unit != None:
+            item['unit'] = unit
+            item['size'] = size
         else: 
             item['unit'] = None
             item['size'] = None
@@ -254,7 +259,7 @@ class ProductPipeline:
         if item['price'] == None:
             return
         
-        item['price'] = self.value(item['price'])[0]
+        item['price'] = self.value(item['price'])
 
     """
     """
@@ -281,7 +286,7 @@ class ProductPipeline:
         ).first()
 
         if result is not None:
-            category = ProductCategory(product=item['id'], category=result.category)
+            category = ProductCategory(product=item['id'], brand=item['brand'], category=result.category)
             self.session.add(category)
             self.session.commit()
             self.session.refresh(category)

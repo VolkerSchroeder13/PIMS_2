@@ -11,6 +11,12 @@ def check_text(text):
         text = text.replace(x, '')
     return text
 
+def check_id(text):
+    val = [' ','\n', '\r', '\t']
+    for x in val:
+        text = text.replace(x, '')
+    return text
+
 def check_prefix(id, loader_context):
     return loader_context.get('prefix') + id
 
@@ -18,7 +24,7 @@ def check_prefix(id, loader_context):
 class Product(Item):
     brand = Field()
     address = Field()
-    id = Field(input_processor=Map(remove_tags, check_text, check_prefix), output_processor=First())
+    id = Field(input_processor=Map(remove_tags, check_id, check_prefix), output_processor=First())
     ean = Field(input_processor=Map(remove_tags, check_text), output_processor=First())
     title = Field(input_processor=Map(remove_tags, check_text), output_processor=First())
     price = Field(input_processor=Map(remove_tags, check_text), output_processor=First())

@@ -26,9 +26,10 @@ class HoevlerSpider(Spider):
         i.add_value('brand', self.name)
         i.add_css('id', ' div.product--price.ordernumber > span')
         i.add_css('title', 'h1.product--title')
-        i.add_css('price', 'div,.product--price > span')
+        i.add_css('price', 'div.product--price > span')
         i.add_css('size', 'div.product--price.price--unit')
-        
+        i.add_css('time', 'p.delivery--information > span')
+
         i.add_css('selector', 'ul.breadcrumb--list > li > a > span')
 
         i.add_css('short_description', 'div.product--keywords')

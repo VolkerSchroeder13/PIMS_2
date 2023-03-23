@@ -59,7 +59,7 @@ class FatboySpider(BaseSpider):
         i.add_css('price', 'span.price')
         i.add_css('time', 'div.product-stock--status')
 
-        i.add_css('selector', 'nav.nav__breadcrumbs > ul > li > span')
+        i.add_css('selector', 'nav.nav__breadcrumbs > ul > li:not(:last-child) > a > span')
 
         i.add_css('short_description', 'h2.subtitle')
         i.add_css('description', 'div.product-variant-information-wide > div > div:nth-child(4)')
