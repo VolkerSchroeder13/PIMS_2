@@ -137,6 +137,9 @@ class DatabasePipeline:
     | Es wird ein neues Produkt erstellt und in die Datenbank-Tabelle hinzugefügt.
     """
     def insert_item(self, item):
+        if item['id'] is None:
+            return 
+        
         self.session.add(
             Product(
                 brand = item['brand'],
