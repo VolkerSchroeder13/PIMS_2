@@ -44,16 +44,18 @@ class FatboySpider(BaseSpider):
                 response=self.page(
                     url=response.urljoin(item.get()),
                     delay=5
-                )
+                ),
+                parent=page.css('div.product-attributes > dl > dd:nth-child(2)').get()
             )
 
-    def parse_product(self, response):
+    def parse_product(self, response, parent):
         i = ItemLoader(item=Product(), selector=response)
 
         i.context['prefix'] = 'FB'
         i.add_value('address', self.address)
         i.add_value('brand', self.name)
         i.add_css('id', 'div.product-attributes > dl > dd:nth-child(2)')
+        i.add_value('parent', parent)
         i.add_css('ean', 'div.product-attributes > dl > dd:nth-child(4)')
         i.add_css('title', 'h1.title')
         i.add_css('price', 'span.price')
@@ -61,24 +63,26 @@ class FatboySpider(BaseSpider):
 
         i.add_css('selector', 'nav.nav__breadcrumbs > ul > li:not(:last-child) > a > span')
 
-        i.add_css('short_description', 'h2.subtitle')
-        i.add_css('description', 'div.product-variant-information-wide > div > div:nth-child(4)')
-        i.add_css('recommendation', 'div.product-variant-information-wide > div > div:nth-child(2)')
-        i.add_css('composition', 'div.product-variant-information-wide > div > div:nth-child(3)')
-        i.add_css('usage', 'div.product-variant-information-wide > div > div:nth-child(5)')
-        i.add_css('safety', 'div.product-variant-information-wide > div > div:nth-child(6)')
+        i.add_value('title_1', 'Kurzbeschreibung')
+        i.add_value('title_2', 'Beschreibung')
+        i.add_value('title_3', 'Produkteigenschaften')
+        i.add_value('title_4', 'Abmessungen')
+        i.add_value('title_5', 'Nutzerinformation')
+        i.add_value('title_6', 'Nachhaltigkeit')
 
-        i.add_value('recommendation_title', 'Produkteigenschaften')
-        i.add_value('composition_title', 'Abmessungen')
-        i.add_value('usage_title', 'Nutzerinformation')
-        i.add_value('safety_title', 'Nachhaltigkeit')
+        i.add_css('content_1', 'h2.subtitle')
+        i.add_css('content_2', 'div.product-variant-information-wide > div > div:nth-child(4)')
+        i.add_css('content_3', 'div.product-variant-information-wide > div > div:nth-child(2)')
+        i.add_css('content_4', 'div.product-variant-information-wide > div > div:nth-child(3)')
+        i.add_css('content_5', 'div.product-variant-information-wide > div > div:nth-child(5)')
+        i.add_css('content_6', 'div.product-variant-information-wide > div > div:nth-child(6)')
 
-        i.add_css('short_description_html', 'h2.subtitle')
-        i.add_css('description_html', 'div.product-variant-information-wide > div > div:nth-child(4)')
-        i.add_css('recommendation_html', 'div.product-variant-information-wide > div > div:nth-child(2)')
-        i.add_css('composition_html', 'div.product-variant-information-wide > div > div:nth-child(3)')
-        i.add_css('usage_html', 'div.product-variant-information-wide > div > div:nth-child(5)')
-        i.add_css('safety_html', 'div.product-variant-information-wide > div > div:nth-child(6)')
+        i.add_css('content_1_html', 'h2.subtitle')
+        i.add_css('content_2_html', 'div.product-variant-information-wide > div > div:nth-child(4)')
+        i.add_css('content_3_html', 'div.product-variant-information-wide > div > div:nth-child(2)')
+        i.add_css('content_4_html', 'div.product-variant-information-wide > div > div:nth-child(3)')
+        i.add_css('content_5_html', 'div.product-variant-information-wide > div > div:nth-child(5)')
+        i.add_css('content_6_html', 'div.product-variant-information-wide > div > div:nth-child(6)')
 
         for img in response.css('div.main-image-container img::attr(src)'):
             i.add_value('image_urls', img.get())

@@ -7,14 +7,12 @@ from scrapy import Item, Field
 
 def check_text(text):
     val = ['  ', '\n', '\r', '\t', ';', '®', '&amp']
-    for x in val:
-        text = text.replace(x, '')
+    for x in val: text = text.replace(x, '')
     return text
 
 def check_id(text):
     val = [' ','\n', '\r', '\t']
-    for x in val:
-        text = text.replace(x, '')
+    for x in val: text = text.replace(x, '')
     return text
 
 def check_prefix(id, loader_context):
@@ -25,33 +23,37 @@ class Product(Item):
     brand = Field()
     address = Field()
     id = Field(input_processor=Map(remove_tags, check_id, check_prefix), output_processor=First())
+    parent = Field(input_processor=Map(remove_tags, check_id, check_prefix), output_processor=First())
     ean = Field(input_processor=Map(remove_tags, check_text), output_processor=First())
     title = Field(input_processor=Map(remove_tags, check_text), output_processor=First())
     price = Field(input_processor=Map(remove_tags, check_text), output_processor=First())
     time = Field(input_processor=Map(remove_tags, check_text), output_processor=First())
     size = Field(input_processor=Map(remove_tags, check_text), output_processor=First())
+    date = Field()
     unit = Field()
 
     selector = Field(input_processor=Map(remove_tags, check_text), output_processor=Join())
 
-    short_description = Field(input_processor=Map(remove_tags, check_text), output_processor=Join())
-    description = Field(input_processor=Map(remove_tags, check_text), output_processor=Join())
-    recommendation = Field(input_processor=Map(remove_tags, check_text), output_processor=Join())
-    composition = Field(input_processor=Map(remove_tags, check_text), output_processor=Join())
-    usage = Field(input_processor=Map(remove_tags, check_text), output_processor=Join())
-    safety = Field(input_processor=Map(remove_tags, check_text), output_processor=Join())
+    title_1 = Field()
+    title_2 = Field()
+    title_3 = Field()
+    title_4 = Field()
+    title_5 = Field()
+    title_6 = Field()
 
-    recommendation_title = Field()
-    composition_title = Field()
-    usage_title = Field()
-    safety_title = Field()
+    content_1 = Field(input_processor=Map(remove_tags, check_text), output_processor=Join())
+    content_2 = Field(input_processor=Map(remove_tags, check_text), output_processor=Join())
+    content_3 = Field(input_processor=Map(remove_tags, check_text), output_processor=Join())
+    content_4 = Field(input_processor=Map(remove_tags, check_text), output_processor=Join())
+    content_5 = Field(input_processor=Map(remove_tags, check_text), output_processor=Join())
+    content_6 = Field(input_processor=Map(remove_tags, check_text), output_processor=Join())
 
-    short_description_html = Field(input_processor=Map(check_text), output_processor=Join())
-    description_html = Field(input_processor=Map(check_text), output_processor=Join())
-    recommendation_html = Field(input_processor=Map(check_text), output_processor=Join())
-    composition_html = Field(input_processor=Map(check_text), output_processor=Join())
-    usage_html = Field(input_processor=Map(check_text), output_processor=Join())
-    safety_html = Field(input_processor=Map(check_text), output_processor=Join())
+    content_1_html = Field(input_processor=Map(check_text), output_processor=Join())
+    content_2_html = Field(input_processor=Map(check_text), output_processor=Join())
+    content_3_html = Field(input_processor=Map(check_text), output_processor=Join())
+    content_4_html = Field(input_processor=Map(check_text), output_processor=Join())
+    content_5_html = Field(input_processor=Map(check_text), output_processor=Join())
+    content_6_html = Field(input_processor=Map(check_text), output_processor=Join())
 
     image_urls = Field()
     images = Field()

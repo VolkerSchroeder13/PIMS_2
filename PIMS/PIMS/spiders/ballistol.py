@@ -36,31 +36,33 @@ class BallistolSpider(BaseSpider):
                     delay=10
                 )
         
-        yield self.parse_product(response=page)
+        yield self.parse_product(response=page, parent=page.css('span.entry--content').get())
 
-    def parse_product(self, response):
+    def parse_product(self, response, parent):
         i = ItemLoader(item=Product(), selector=response)
         
         i.context['prefix'] = 'BA'
         i.add_value('address', self.address)
         i.add_value('brand', self.name)
         i.add_css('id', 'span.entry--content')
+        i.add_value('parent', parent)
         i.add_css('title', 'h1.product--title')
         i.add_css('price', 'span.price--content > meta::attr(content)')
         i.add_css('size', 'div.product--configurator > form > div > select > option[selected]')
 
         i.add_css('selector', 'span.breadcrumb--title')
 
-        i.add_css('description', 'div.product--description > div.pro-desc')
-        i.add_css('recommendation', 'div.properties--content--section > div.product--properties')
-        i.add_css('safety', 'div.safety_instructions--content--section > div > div.si-desc')
+        i.add_value('title_1', 'Beschreibung')
+        i.add_value('title_2', 'Eigenschaften')
+        i.add_value('title_3', 'Gefahren- und Sicherheitshinweise')
 
-        i.add_value('recommendation_title', 'Eigenschaften')
-        i.add_value('safety_title', 'Gefahren- und Sicherheitshinweise')
+        i.add_css('content_1', 'div.product--description > div.pro-desc')
+        i.add_css('content_2', 'div.properties--content--section > div.product--properties')
+        i.add_css('content_3', 'div.safety_instructions--content--section > div > div.si-desc')
 
-        i.add_css('description_html', 'div.product--description > div.pro-desc')
-        i.add_css('recommendation_html', 'div.properties--content--section > div.product--properties')
-        i.add_css('safety_html', 'div.safety_instructions--content--section > div > div.si-desc')
+        i.add_css('content_1_html', 'div.product--description > div.pro-desc')
+        i.add_css('content_2_html', 'div.properties--content--section > div.product--properties')
+        i.add_css('content_3_html', 'div.safety_instructions--content--section > div > div.si-desc')
 
         for img in response.css('div.image-slider--slide > div > span > span > img::attr(srcset)'):
             i.add_value('image_urls', img.get())

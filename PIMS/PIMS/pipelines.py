@@ -105,6 +105,7 @@ class DatabasePipeline:
     def update_item(self, item):
         result = self.session.exec(select(Product).where(Product.id == item['id'])).one()
         
+        result.parent = item['parent']
         result.ean = item['ean']
         result.brand = item['brand']
         result.address = item['address']
@@ -113,22 +114,25 @@ class DatabasePipeline:
         result.size = item['size']
         result.unit = item['unit']
         result.time = item['time']
-        result.short_description = item['short_description']
-        result.description = item['description']
-        result.recommendation = item['recommendation']
-        result.composition = item['composition']    
-        result.usage = item['usage']
-        result.safety = item['safety']
-        result.recommendation_title = item['recommendation_title']
-        result.composition_title = item['composition_title']
-        result.usage_title = item['usage_title']
-        result.safety_title = item['safety_title']
-        result.short_description_html = item['short_description_html']
-        result.description_html = item['description_html']
-        result.recommendation_html = item['recommendation_html']
-        result.composition_html = item['composition_html']
-        result.usage_html = item['usage_html']
-        result.safety_html = item['safety_html']
+        result.date = item['date']
+        result.title_1 = item['title_1']
+        result.title_2 = item['title_2']
+        result.title_3 = item['title_3']
+        result.title_4 = item['title_4']
+        result.title_5 = item['title_5']
+        result.title_6 = item['title_6']
+        result.content_1 = item['content_1']
+        result.content_2 = item['content_2']
+        result.content_3 = item['content_3']
+        result.content_4 = item['content_4']
+        result.content_5 = item['content_5']
+        result.content_6 = item['content_6']
+        result.content_1_html = item['content_1_html']
+        result.content_2_html = item['content_2_html']
+        result.content_3_html = item['content_3_html']
+        result.content_4_html = item['content_4_html']
+        result.content_5_html = item['content_5_html']
+        result.content_6_html = item['content_6_html']
 
         self.session.add(result)
         self.session.commit()
@@ -146,28 +150,32 @@ class DatabasePipeline:
                 brand = item['brand'],
                 address = item['address'],
                 id = item['id'],
+                parent=item['parent'],
                 ean = item['ean'],
                 title = item['title'],
                 price = item['price'],
                 size = item['size'],
                 unit = item['unit'],
                 time = item['time'],
-                short_description = item['short_description'],
-                description = item['description'],
-                recommendation = item['recommendation'],
-                composition = item['composition'],
-                usage = item['usage'],
-                safety = item['safety'],
-                recommendation_title = item['recommendation_title'],
-                composition_title = item['composition_title'],
-                usage_title = item['usage_title'],
-                safety_title = item['safety_title'],
-                short_description_html = item['short_description_html'],
-                description_html = item['description_html'],
-                recommendation_html = item['recommendation_html'],
-                composition_html = item['composition_html'],
-                usage_html = item['usage_html'],
-                safety_html = item['safety_html'],
+                date = item['date'],
+                title_1 = item['title_1'],
+                title_2 = item['title_2'],
+                title_3 = item['title_3'],
+                title_4 = item['title_4'],
+                title_5 = item['title_5'],
+                title_6 = item['title_6'],
+                content_1 = item['content_1'],
+                content_2 = item['content_2'],
+                content_3 = item['content_3'],
+                content_4 = item['content_4'],
+                content_5 = item['content_5'],
+                content_6 = item['content_6'],
+                content_1_html = item['content_1_html'],
+                content_2_html = item['content_2_html'],
+                content_3_html = item['content_3_html'],
+                content_4_html = item['content_4_html'],
+                content_5_html = item['content_5_html'],
+                content_6_html = item['content_6_html']
             )
         )
         self.session.commit()
@@ -261,6 +269,18 @@ class ProductPipeline:
         
         item['price'] = self.value(item['price'])
 
+    def date(self, item):
+        if item['time'] == None:
+            return
+        
+        date = findall(r'\d{1,2}-\d{1,2}-\d{4}', item['time'])
+
+        if len(date) == 0:
+            item['date'] = None
+        else:
+            item['date'] = date[0]
+
+
     """
     """
     def selector(self, item):
@@ -300,6 +320,7 @@ class ProductPipeline:
         self.set_default(item)
         self.price(item)
         self.size(item)
+        self.date(item)
         self.selector(item)
         self.category(item)
         return item
