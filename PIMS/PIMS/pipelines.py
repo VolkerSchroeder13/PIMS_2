@@ -199,16 +199,16 @@ class ProductPipeline:
         self.engine = create_engine('mysql+pymysql://root:root@127.0.0.1:3306/pims')
         self.session = Session(self.engine)
 
-    """
-    | Diese Methode überprüft ob ein gegebenes Produkt bereits in 
-    | Datenbank existiert.
-    """
-    def check_item(self, item):
+    
+    def check_product(self, item):
+        result = self.session.exec(select(Product).where(Product.id == item['id'])).first()
+        if result is None: return True
+        else: return False
+
+    def check_selector(self, item):
         result = self.session.exec(select(Selector).where(Selector.selector == item['selector'])).first()
-        if result is None: 
-            return True
-        else: 
-            return False
+        if result is None: return True
+        else: return False
 
     """
     | Die Methode set_item_default setzt alle Werte des übergebenen
@@ -269,6 +269,8 @@ class ProductPipeline:
         
         item['price'] = self.value(item['price'])
 
+    """
+    """
     def date(self, item):
         if item['time'] == None:
             return
@@ -287,7 +289,7 @@ class ProductPipeline:
         if item['selector'] == None:
             return
 
-        if self.check_item(item):
+        if self.check_selector(item):
             self.session.add(Selector(brand=item['brand'], selector=item['selector']))
             self.session.commit()
 
@@ -297,6 +299,9 @@ class ProductPipeline:
         if item['selector'] == None:
             return
         
+        if self.check_product(item):
+            return
+
         result = self.session.query(Selector).where(
             Selector.selector == item['selector']
         ).where(

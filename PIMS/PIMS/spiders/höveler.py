@@ -47,7 +47,7 @@ class HövelerSpider(Spider):
         i.add_css('content_3_html', 'div.product--description')
         i.add_css('content_4_html', 'div.product--content')
     
-        for img in response.css('div.image--box > span > span > img::attr(srcset)'):
+        for img in response.css('div.image-slider--slide > div.image--box > span::attr(data-img-original)'):
             i.add_value('image_urls', img.get())
 
         yield i.load_item()
