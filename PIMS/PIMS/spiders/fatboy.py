@@ -55,6 +55,7 @@ class FatboySpider(BaseSpider):
         i.add_value('address', self.address)
         i.add_value('brand', self.name)
         i.add_css('id', 'div.product-attributes > dl > dd:nth-child(2)')
+        i.add_css('sid', 'div.product-attributes > dl > dd:nth-child(2)')
         i.add_value('parent', parent)
         i.add_css('ean', 'div.product-attributes > dl > dd:nth-child(4)')
         i.add_css('title', 'h1.title')

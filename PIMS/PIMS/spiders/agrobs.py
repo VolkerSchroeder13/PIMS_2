@@ -33,6 +33,7 @@ class AgrobsSpider(Spider):
         i.add_value('address', self.address)
         i.add_value('brand', self.name)
         i.add_value('id', str(response.url).split('-')[-1].split('/')[0])
+        i.add_value('sid', str(response.url).split('-')[-1].split('/')[0])
         i.add_css('size', 'li:contains("Handelsform")')
         i.add_css('title', 'h1.itemcardHeadline')
         

@@ -37,6 +37,7 @@ class ArdapcareSpider(Spider):
         i.add_value('address', self.address)
         i.add_value('brand', self.name)
         i.add_css('id', 'span.variant-sku')
+        i.add_css('sid', 'span.variant-sku')
         i.add_value('parent', parent)
         i.add_css('title', 'h1.product-single__title')
         i.add_css('price', 'span.price-item--regular')

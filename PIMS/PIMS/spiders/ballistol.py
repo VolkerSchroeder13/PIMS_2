@@ -45,6 +45,7 @@ class BallistolSpider(BaseSpider):
         i.add_value('address', self.address)
         i.add_value('brand', self.name)
         i.add_css('id', 'span.entry--content')
+        i.add_css('sid', 'span.entry--content')
         i.add_value('parent', parent)
         i.add_css('title', 'h1.product--title')
         i.add_css('price', 'span.price--content > meta::attr(content)')

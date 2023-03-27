@@ -36,6 +36,7 @@ class AtcomSpider(BaseSpider):
         i.add_value('address', self.address)
         i.add_value('brand', self.name)
         i.add_css('id', 'span.product-detail-ordernumber')
+        i.add_css('sid', 'span.product-detail-ordernumber')
         i.add_css('title', 'h1.product-detail-name')
         i.add_css('price', 'p.product-detail-price')
         i.add_css('size', 'select.product-configurator-select > option[selected]')

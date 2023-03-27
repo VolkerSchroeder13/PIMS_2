@@ -25,6 +25,7 @@ class HövelerSpider(Spider):
         i.add_value('address', self.address)
         i.add_value('brand', self.name)
         i.add_css('id', ' div.product--price.ordernumber > span')
+        i.add_css('sid', ' div.product--price.ordernumber > span')
         i.add_css('title', 'h1.product--title')
         i.add_css('price', 'div.product--price > span')
         i.add_css('size', 'div.product--price.price--unit')

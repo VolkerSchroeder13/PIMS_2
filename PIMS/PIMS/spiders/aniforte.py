@@ -50,6 +50,7 @@ class AniforteSpider(Spider):
         i.add_value('address', self.address)
         i.add_value('brand', self.name)
         i.add_value('id', data['sku'])
+        i.add_value('sid', data['sku'])
         i.add_value('parent', parent)
         i.add_css('title', 'h2.ProductMeta__Title')
         i.add_css('price', 'span.ProductMeta__Price')

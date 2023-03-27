@@ -23,6 +23,7 @@ class Product(Item):
     brand = Field()
     address = Field()
     id = Field(input_processor=Map(remove_tags, check_id, check_prefix), output_processor=First())
+    sid = Field(input_processor=Map(remove_tags, check_id), output_processor=First())
     parent = Field(input_processor=Map(remove_tags, check_id, check_prefix), output_processor=First())
     ean = Field(input_processor=Map(remove_tags, check_text), output_processor=First())
     title = Field(input_processor=Map(remove_tags, check_text), output_processor=First())
