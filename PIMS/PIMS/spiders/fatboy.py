@@ -12,38 +12,38 @@ class FatboySpider(BaseSpider):
     start_urls = ['https://www.fatboy.com/de-de']
 
     def parse(self, response):
-        page = self.page(url=response.url, delay=5)
+        page = self.page(url=response.url, delay=10)
         
         for item in page.css('nav.navigation--desktop > ul > li > a::attr(href)'):
             yield Request(url=response.urljoin(item.get()), callback=self.parse_category)
 
     def parse_category(self, response):
-        page = self.page(url=response.url, delay=5)
+        page = self.page(url=response.url, delay=10)
         
         for item in page.css('div.subcategory-link > div > div > div > a::attr(href)'):
             yield Request(url=response.urljoin(item.get()), callback=self.parse_subcategory)
 
     def parse_subcategory(self, response):
-        page = self.page(url=response.url, delay=5)
+        page = self.page(url=response.url, delay=10)
         
         if page.css('button:contains("Mehr laden")').get() is not None:
             page = self.click(
                 url=response.url, 
                 buttons=['OK', 'Mehr laden'], 
-                delay=10
+                delay=20
             )
         
         for item in page.css('div.category-grid > div > a::attr(href)'):
             yield Request(url=response.urljoin(item.get()), callback=self.parse_variation)
 
     def parse_variation(self, response):
-        page = self.page(url=response.url, delay=5)
+        page = self.page(url=response.url, delay=10)
 
         for item in page.css('div.variant-picker--container > div > div > a::attr(href)'):
             yield self.parse_product(
                 response=self.page(
                     url=response.urljoin(item.get()),
-                    delay=5
+                    delay=20
                 ),
                 parent=page.css('div.product-attributes > dl > dd:nth-child(2)').get()
             )

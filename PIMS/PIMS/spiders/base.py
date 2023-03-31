@@ -14,7 +14,9 @@ class BaseSpider(Spider):
             
             page = browser.new_page()
             page.goto(url)
+            
             sleep(delay)
+
             content = page.content()
             page.close
 
@@ -29,6 +31,7 @@ class BaseSpider(Spider):
             page.select_option(selector=select, value=option)
             
             sleep(delay)
+
             content = page.content()
             page.close()
             
@@ -43,6 +46,22 @@ class BaseSpider(Spider):
             
             for button in buttons:
                 page.get_by_role('button').get_by_text(button).click()
+                sleep(delay)
+                
+            content = page.content()
+            page.close()
+
+            return Selector(text=content)
+        
+    def click(self, url, selectors, delay):
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=True)
+            
+            page = browser.new_page()
+            page.goto(url)
+            
+            for selector in selectors:
+                page.click(selector=selector)
                 sleep(delay)
                 
             content = page.content()
