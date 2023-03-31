@@ -1,3 +1,4 @@
+import datetime
 from PIMS.models import Product, Selector, ProductCategory, Image, Base
 from sqlmodel import Session, create_engine, select
 from scrapy.pipelines.images import ImagesPipeline
@@ -277,13 +278,13 @@ class ProductPipeline:
         if item['time'] == None:
             return
         
-        date = findall(r'\d{1,2}-\d{1,2}-\d{4}', item['time'])
+        result = findall(r'\d{1,2}-\d{1,2}-\d{4}', item['time'])
 
-        if len(date) == 0:
+        if len(result) == 0:
             item['date'] = None
         else:
-            item['date'] = date[0]
-
+            date = datetime.datetime.strptime(result[0], '%d-m%-%Y')
+            item['date'] = date.strftime('%d.%m.%Y')
 
     """
     """
