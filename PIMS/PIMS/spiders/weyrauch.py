@@ -24,46 +24,44 @@ class WeyrauchSpider(BaseSpider):
             yield Request(url=response.urljoin(next.get()), callback=self.parse_category)
 
     def parse_variation(self, response):
-        pass
+        pages = self.click(
+            url=response.url,
+            selector='div.configurator--variant > form > div > input',
+            delay=10
+        )
 
+        for page in pages:
+            yield self.parse_product(
+                response=page, 
+                parent=page.css('ul.product--base-info > li > span').get()
+            )
+           
     def parse_product(self, response, parent):
-        i = ItemLoader(item=Product(), response=response)
+        i = ItemLoader(item=Product(), selector=response)
         
         i.context['prefix'] = ''
         i.add_value('address', self.address)
         i.add_value('brand', self.name)
-        i.add_value('id', '')
-        i.add_value('sid', '')
+        i.add_css('id', 'ul.product--base-info > li > span')
+        i.add_css('sid', 'ul.product--base-info > li > span')
         i.add_value('parent', parent)
-        i.add_css('title', 'h2.ProductMeta__Title')
-        i.add_css('price', 'span.ProductMeta__Price')
-        i.add_css('size', 'div.ProductForm__Variants > div.ProductForm__Option > ul > li > input[checked]::attr(value)')
-        i.add_css('time', 'div.ProductMeta > div.price_and_info_container > :nth-child(3)')
+        i.add_css('title', 'div.product--info > h1.product--title')
+        i.add_css('price', 'div.product--price > span.price--content')
+        i.add_css('size', 'div.product--price.price--unit')
+        i.add_css('time', 'p.delivery--information > span.delivery--text')
         
-        i.add_css('selector', 'div.Header__Wrapper a.link_active')
+        i.add_css('selector', 'ul.breadcrumb--list > li > a > span')
 
-        i.add_value('title_1', 'Kurzbeschreibung')
-        i.add_value('title_2', 'Beschreibung')
-        i.add_value('title_3', 'Fütterungsempfehlung')
-        i.add_value('title_4', 'Zusammensetzung')
-        i.add_value('title_5', 'Anwendung')
-        i.add_value('title_6', 'Produkthinweis')
+        i.add_value('title_1', 'Beschreibung')
+        i.add_value('title_2', 'Inhaltsstoffe')
         
-        i.add_css('content_1', 'ul.ProductMeta__usps')
-        i.add_css('content_2', 'div.Product__Tabs > div > button:contains("Beschreibung") ~ div')
-        i.add_css('content_3', 'div.Product__Tabs > div > button:contains("Fütterungsempfehlung") ~ div')
-        i.add_css('content_4', 'div.Product__Tabs > div > button:contains("Zusammensetzung") ~ div')
-        i.add_css('content_5', 'div.Product__Tabs > div > button:contains("Anwendung") ~ div')
-        i.add_css('content_6', 'div.Product__Tabs > div > button:contains("Produkthinweis") ~ div')
+        i.add_css('content_1', 'div.content--description')
+        i.add_css('content_2', 'div.content--inhaltsstoffe')
         
-        i.add_css('content_1_html', 'ul.ProductMeta__usps')
-        i.add_css('content_2_html', 'div.Product__Tabs > div > button:contains("Beschreibung") ~ div')
-        i.add_css('content_3_html', 'div.Product__Tabs > div > button:contains("Fütterungsempfehlung") ~ div')
-        i.add_css('content_4_html', 'div.Product__Tabs > div > button:contains("Zusammensetzung") ~ div')
-        i.add_css('content_5_html', 'div.Product__Tabs > div > button:contains("Anwendung") ~ div')
-        i.add_css('content_6_html', 'div.Product__Tabs > div > button:contains("Produkthinweis") ~ div')
+        i.add_css('content_1_html', 'div.content--description')
+        i.add_css('content_2_html', 'div.content--inhaltsstoffe')
         
-        for img in response.css('div.Product__Slideshow > div > div > img::attr(data-original-src)'):
-            i.add_value('image_urls', response.urljoin(img.get()))
+        for img in response.css('div.image-slider--container > div > div > span::attr(data-img-large)'):
+            i.add_value('image_urls', img.get())
         
-        yield i.load_item()
+        return i.load_item()

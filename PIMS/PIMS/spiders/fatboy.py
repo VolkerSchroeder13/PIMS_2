@@ -28,7 +28,7 @@ class FatboySpider(BaseSpider):
         
         if page.css('button:contains("Mehr laden")').get() is not None:
             page = self.click(
-                url=response.url, 
+                url=response.url,
                 buttons=['OK', 'Mehr laden'], 
                 delay=20
             )

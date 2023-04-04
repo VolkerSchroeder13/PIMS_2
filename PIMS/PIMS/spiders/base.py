@@ -53,18 +53,21 @@ class BaseSpider(Spider):
 
             return Selector(text=content)
         
-    def click(self, url, selectors, delay):
+    def click(self, url, selector, delay):
         with sync_playwright() as p:
             browser = p.chromium.launch(headless=True)
             
             page = browser.new_page()
             page.goto(url)
-            
-            for selector in selectors:
-                page.click(selector=selector)
+
+            pages = []
+           
+            for button in page.locator(selector=selector).all():
+                button.click()
+                pages.append(Selector(text=page.content()))
                 sleep(delay)
                 
-            content = page.content()
             page.close()
 
-            return Selector(text=content)
+            return pages
+        
