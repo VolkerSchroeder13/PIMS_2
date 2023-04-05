@@ -29,8 +29,9 @@ class FatboySpider(BaseSpider):
         if page.css('button:contains("Mehr laden")').get() is not None:
             page = self.click(
                 url=response.url,
-                buttons=['OK', 'Mehr laden'], 
-                delay=20
+                buttons='Mehr laden', 
+                delay=20,
+                cookies='OK'
             )
         
         for item in page.css('div.category-grid > div > a::attr(href)'):
