@@ -59,6 +59,7 @@ class EffolSpider(BaseSpider):
         i.add_css('content_1_html', 'div.shortDesc')
         i.add_css('content_2_html', 'div.longDesc')
 
-        i.add_value('image_urls', response.css('a.pv-main-img-link::attr(href)').get())
+        for img in response.css('div.pv-main-image > a::attr(href)'):
+            i.add_value('image_urls', img.get())
         
         return i.load_item()

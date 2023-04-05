@@ -29,7 +29,7 @@ class AtcomSpider(BaseSpider):
             )
             yield self.parse_product(response=result, parent=result.css('span.product-detail-ordernumber').get())
             
-    def parse_product(self, response):
+    def parse_product(self, response, parent):
         i = ItemLoader(item=Product(), selector=response)
 
         i.context['prefix'] = 'AT'
@@ -37,6 +37,7 @@ class AtcomSpider(BaseSpider):
         i.add_value('brand', self.name)
         i.add_css('id', 'span.product-detail-ordernumber')
         i.add_css('sid', 'span.product-detail-ordernumber')
+        i.add_value('parent', parent)
         i.add_css('title', 'h1.product-detail-name')
         i.add_css('price', 'p.product-detail-price')
         i.add_css('size', 'select.product-configurator-select > option[selected]')
