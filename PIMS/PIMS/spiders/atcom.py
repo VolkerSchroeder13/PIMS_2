@@ -25,7 +25,7 @@ class AtcomSpider(BaseSpider):
                 url=response.url, 
                 select='div.product-detail-configurator-options > select', 
                 option=item.get(),
-                delay=5
+                delay=10
             )
             yield self.parse_product(response=result, parent=result.css('span.product-detail-ordernumber').get())
             
@@ -56,11 +56,11 @@ class AtcomSpider(BaseSpider):
         i.add_css('content_4', 'div[id="product-detail-tab-pane"]')
    
         i.add_css('content_1_html', 'div.product-detail-description-short-content')
-        i.add_css('content_2_html', 'div[id="description-tab-pane"]')
-        i.add_css('content_3_html', 'div[id="feeding-recommendation-tab-pane"]')
-        i.add_css('content_4_html', 'div[id="product-detail-tab-pane"]')
+        i.add_css('content_2_html', 'div[id="description-tab-pane"] > div')
+        i.add_css('content_3_html', 'div[id="feeding-recommendation-tab-pane"] > div')
+        i.add_css('content_4_html', 'div[id="product-detail-tab-pane"] > div')
 
-        for img in response.css('div.gallery-slider-item-container > div > img::attr(data-src)'):
-            i.add_value('image_urls', response.urljoin(img.get()))
+        for img in response.css('div.gallery-slider-container img::attr(src)'):
+            i.add_value('image_urls', img.get())
 
         return i.load_item()

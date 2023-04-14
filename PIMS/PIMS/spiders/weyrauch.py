@@ -47,7 +47,7 @@ class WeyrauchSpider(BaseSpider):
         i.add_value('parent', parent)
         i.add_css('title', 'div.product--info > h1.product--title')
         i.add_css('price', 'div.product--price > span.price--content')
-        i.add_css('size', 'div.product--price.price--unit')
+        i.add_css('size', 'div.variant--option > input[checked="checked"]::attr(title)')
         i.add_css('time', 'p.delivery--information > span.delivery--text')
         
         i.add_css('selector', 'ul.breadcrumb--list > li > a > span')

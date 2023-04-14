@@ -47,6 +47,6 @@ class EquanisSpider(Spider):
         i.add_css('content_3_html', 'div.woocommerce-Tabs-panel--additional_information')
         
         for img in response.css('div.woocommerce-product-gallery__image > a::attr(href)'):
-            i.add_value('image_urls', response.urljoin(img.get()))
+            i.add_value('image_urls', img.get())
         
         yield i.load_item()

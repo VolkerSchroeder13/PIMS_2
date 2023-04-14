@@ -261,6 +261,7 @@ class ProductPipeline:
             if txt == 'kilogramm': return 'Kilogramm'
             if txt == 'g': return 'Gramm'
             if txt == 'gramm': return 'Gramm'
+            if txt == 'kapseln': return 'Kapseln'
 
     """
     | Die Methode price setzt den Wert auf den gefundenen
