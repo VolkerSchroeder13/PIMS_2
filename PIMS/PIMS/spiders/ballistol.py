@@ -25,16 +25,18 @@ class BallistolSpider(BaseSpider):
             yield Request(url=response.urljoin(next.get()), callback=self.parse_category)
 
     def parse_variation(self, response):
-        page = self.page(url=response.url, delay=5)
+        page = self.page(url=response.url, delay=10)
 
-        if response.css('div.product--configurator select').get() is not None:
-            for item in response.css('div.product--configurator select option::attr(value)'):
-                self.select(
+        for item in response.css('div.product--configurator select option::attr(value)'):
+            yield self.parse_product(
+                response=self.select(
                     url=response.url,
                     select='div.product--configurator select',
                     option=item.get(),
-                    delay=10
-                )
+                    delay=20
+                ), 
+                parent=page.css('span.entry--content').get()
+            )
         
         yield self.parse_product(response=page, parent=page.css('span.entry--content').get())
 
@@ -65,7 +67,7 @@ class BallistolSpider(BaseSpider):
         i.add_css('content_2_html', 'div.properties--content--section > div.product--properties')
         i.add_css('content_3_html', 'div.safety_instructions--content--section > div > div.si-desc')
 
-        for img in response.css('div.image-slider--slide > div > span > span > img::attr(srcset)'):
+        for img in response.css('span.image--element::attr(data-img-original)'):
             i.add_value('image_urls', img.get())
 
         return i.load_item()
