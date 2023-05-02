@@ -21,7 +21,7 @@ class EquinovaSpider(Spider):
     def parse_product(self, response):
         i = ItemLoader(item=Product(), response=response)
         
-        i.context['prefix'] = 'EQ'
+        i.context['prefix'] = 'EO'
         i.add_value('address', self.address)
         i.add_value('brand', self.name)
         i.add_css('id', 'li.entry--sku > span')
