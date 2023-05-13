@@ -4,7 +4,7 @@ from PIMS.items import Product
 from scrapy import Request
 
 
-class EquinovaSpider(BaseSpider):
+class ErlerZimmerSpider(BaseSpider):
 
     name = 'erler-zimmer'
     address = '7021000'
