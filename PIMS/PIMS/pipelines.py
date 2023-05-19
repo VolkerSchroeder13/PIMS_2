@@ -1,9 +1,9 @@
-import datetime
 from PIMS.models import Product, Selector, ProductCategory, Image, Base
 from sqlmodel import Session, create_engine, select
 from scrapy.pipelines.images import ImagesPipeline
 from urllib.parse import urlparse
 from re import findall
+import datetime
 import os
 
 
