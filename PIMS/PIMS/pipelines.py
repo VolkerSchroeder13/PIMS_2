@@ -226,7 +226,7 @@ class ProductPipeline:
     | liefert diese zurück für weitere Verwendungen.
     """
     def value(self, text):
-        text = text.replace('.', '')
+        text = text.replace('.', '') # remove the dots (thousands separator)
         text = text.replace(',', '.')
         return findall(r'[-+]?(?:\d*\.\d+|\d+)', text)[0]
 
@@ -264,7 +264,7 @@ class ProductPipeline:
             if txt == 'gramm': return 'Gramm'
             if txt == 'kapseln': return 'Kapseln'
             if txt == 'stück': return 'Stück'
-        if unit.lower()[-1] == 'g': return 'Gramm'
+        if unit.lower()[-1] == 'g': return 'Gramm' # for smth like: 500g
 
     """
     | Die Methode price setzt den Wert auf den gefundenen
