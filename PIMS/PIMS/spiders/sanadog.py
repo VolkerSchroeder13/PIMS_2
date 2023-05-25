@@ -26,27 +26,21 @@ class SanadogSpider(BaseSpider):
         page = self.page_scroll_down(url=response.url, delay=4)
         for item in page.css('div.product-collection div.product-bottom a.product-title::attr(href)'):
             self.counter_products += 1
-            # yield Request(url=response.urljoin(item.get()), callback=self.parse_variation)
-            yield Request(url=response.urljoin(item.get()), callback=self.parse_product, cb_kwargs=dict(parent=None))
+            yield Request(url=response.urljoin(item.get()), callback=self.parse_variation)
+            # yield Request(url=response.urljoin(item.get()), callback=self.parse_product, cb_kwargs=dict(parent=None))
 
     def parse_variation(self, response):
         page = self.page(url=response.url, delay=4)
         root = page.css('div.sku-product > span::text').get()
         print(f'    DEBUG pv {response.url}')
         print(f'    DEBUG pv root {root}')
-        variants = False
-        for item in page.css('div.swatch-element:not(.soldout) > input.text::attr(data-value-sticky)'):
+        vars = page.css('div.swatch-element:not(.soldout) > input.text::attr(data-value-sticky)').getall()
+        vars.append('')
+        print(f'    DEBUG pv vars {vars}')
+        for item in vars:
             self.counter_variations += 1
-            variants = True
             yield Request(
-                url=(response.url+'?variant='+item.get()),
-                callback=self.parse_product,
-                cb_kwargs=dict(parent=root)
-            )
-        if not variants:
-            self.counter_no_variations += 1
-            yield Request(
-                url=(response.url),
+                url=(response.url+'?variant='+item),
                 callback=self.parse_product,
                 cb_kwargs=dict(parent=root)
             )
@@ -61,16 +55,16 @@ class SanadogSpider(BaseSpider):
         i = ItemLoader(item=Product(), selector=page)
 
         # TODO add SA prefix here and remove SANA prefix from id
-        i.context['prefix'] = ''
+        i.context['prefix'] = 'SA'
         i.add_value('address', self.address)
         i.add_value('brand', self.name)
-        i.add_css('id', 'div.sku-product > span')
-        i.add_css('sid', 'div.sku-product > span')
-        # i.add_value('parent', parent)
-        i.add_css('parent', 'div.sku-product > span')
+        id = page.css('div.sku-product > span::text').get()
+        i.add_value('id', id.replace('SANA', ''))
+        i.add_value('sid', id.replace('SANA', ''))
+        i.add_value('parent', parent)
         i.add_css('title', 'h1.product-title > span')
-        price = int(page.css('div.prices > input::attr(value)').get()) / 100
-        i.add_value('price', str(price))
+        price = float(page.css('div.prices > input::attr(value)').get()) / 100
+        i.add_value('price', str(price).replace('.', ','))
         # size = str(page.css('div.header.a- > :nth-child(2)::text').get()).replace('.', '')
         i.add_css('size', 'div.header.a- > :nth-child(2)::text')
         # TODO? add price time
