@@ -37,9 +37,9 @@ class BaseSpider(Spider):
                 page.mouse.wheel(0, 15000)
                 sleep(.5)
                 # scroll up a bit
-                page.mouse.wheel(0, -1000)
+                page.mouse.wheel(0, -2000)
                 # scroll back down gradually to make sure stuff actually loads
-                for _ in range(5):
+                for _ in range(10):
                     sleep(.5)
                     page.mouse.wheel(0, 200)
                 i += 1
