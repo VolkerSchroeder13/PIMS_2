@@ -37,7 +37,7 @@ class EffolSpider(BaseSpider):
     def parse_product(self, response, parent):
         i = ItemLoader(item=Product(), selector=response)
         
-        i.context['prefix'] = 'EQ'
+        i.context['prefix'] = 'EF'
         i.add_value('address', self.address)
         i.add_value('brand', self.name)
         i.add_css('id', 'div.prodCode > div > span')

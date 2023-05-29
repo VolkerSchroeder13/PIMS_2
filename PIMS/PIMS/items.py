@@ -3,16 +3,25 @@ from itemloaders.processors import TakeFirst as First
 from itemloaders.processors import Join
 from w3lib.html import remove_tags
 from scrapy import Item, Field
+from re import sub
 
+
+def check_html(text):
+    return sub(r'<(?!p|/p|h[1-6]|/h[1-6]|ul|/ul|ol|/ol|li|/li|u|/u|strong|/strong).*?>','', text)
 
 def check_text(text):
-    val = ['  ', '\n', '\r', '\t', ';', '®', '&amp']
-    for x in val: text = text.replace(x, '')
+    values = ['  ', '\n', '\r', '\t', ';', '®', '&amp']
+    for x in values: text = text.replace(x, '')
+    return text
+
+def check_title(text):
+    values = ['!', '%', '–']
+    for x in values: text = text.replace(x, '')
     return text
 
 def check_id(text):
-    val = [' ','\n', '\r', '\t']
-    for x in val: text = text.replace(x, '')
+    values = [' ','\n', '\r', '\t']
+    for x in values: text = text.replace(x, '')
     return text
 
 def check_prefix(id, loader_context):
@@ -49,12 +58,12 @@ class Product(Item):
     content_5 = Field(input_processor=Map(remove_tags, check_text), output_processor=Join())
     content_6 = Field(input_processor=Map(remove_tags, check_text), output_processor=Join())
 
-    content_1_html = Field(input_processor=Map(check_text), output_processor=Join())
-    content_2_html = Field(input_processor=Map(check_text), output_processor=Join())
-    content_3_html = Field(input_processor=Map(check_text), output_processor=Join())
-    content_4_html = Field(input_processor=Map(check_text), output_processor=Join())
-    content_5_html = Field(input_processor=Map(check_text), output_processor=Join())
-    content_6_html = Field(input_processor=Map(check_text), output_processor=Join())
+    content_1_html = Field(input_processor=Map(check_text, check_html), output_processor=Join())
+    content_2_html = Field(input_processor=Map(check_text, check_html), output_processor=Join())
+    content_3_html = Field(input_processor=Map(check_text, check_html), output_processor=Join())
+    content_4_html = Field(input_processor=Map(check_text, check_html), output_processor=Join())
+    content_5_html = Field(input_processor=Map(check_text, check_html), output_processor=Join())
+    content_6_html = Field(input_processor=Map(check_text, check_html), output_processor=Join())
 
     image_urls = Field()
     images = Field()
