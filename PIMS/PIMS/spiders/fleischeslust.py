@@ -25,12 +25,13 @@ class FleischeslustSpider(BaseSpider):
 
     def parse_variation(self, response):
         for item in response.css('div.product--configurator > form > div > select > option::attr(value)'):
-            self.parse_product(
+            yield self.parse_product(
                 response=self.select(
                     response.url, 
                     select='div.product--configurator > form > div > select',
                     option=item.get(),
-                    delay=20
+                    delay=10,
+                    cookies='button#CybotCookiebotDialogBodyButtonAccept'
                 ),
                 parent=response.css('span.entry--content').get()
             )
@@ -45,17 +46,15 @@ class FleischeslustSpider(BaseSpider):
         i.add_css('sid', 'span.entry--content')
         i.add_value('parent', parent)
         i.add_css('title', 'h1.product--title')
-        i.add_css('size', 'div.product--configurator > form > div > select > option::attr(selected)')
         i.add_css('time', 'span.delivery--text')
         
         i.add_css('selector', 'ul.breadcrumb--list > li > a > span')
 
         i.add_value('title_1', 'Beschreibung')
-        
         i.add_css('content_1', 'div.content--description')
         i.add_css('content_1_html', 'div.content--description')
        
-        for img in response.css('span.image--media > img::attr(srcset)'):
-            i.add_value('image_urls', response.urljoin(img.get()))
+        for img in response.css('div.image-slider--container > div > div > span > span > img::attr(src)'):
+            i.add_value('image_urls', img.get())
         
-        yield i.load_item()
+        return i.load_item()

@@ -23,8 +23,8 @@ class CdvetSpider(BaseSpider):
         pages = self.click(
             url=response.url,
             selector='div.product-detail-configurator-options > div > label',
-            delay=20,
-            cookies='Nur funktionale Cookies akzeptieren'
+            delay=10,
+            cookies='button#ccAcceptButton'
         )
 
         for page in pages:
@@ -65,7 +65,7 @@ class CdvetSpider(BaseSpider):
         i.add_css('content_4_html', 'div.product-detail-properties')
         i.add_css('content_5_html', 'div.product-detail-manufacturer')
 
-        for img in response.css('div.gallery-slider-item img::attr(src)'):
+        for img in response.css('div.gallery-slider-single-image > img::attr(image)'):
             i.add_value('image_urls', img.get())
 
         return i.load_item()

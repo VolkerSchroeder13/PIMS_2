@@ -29,10 +29,10 @@ class FatboySpider(BaseSpider):
         if page.css('button:contains("Mehr laden")').get() is not None:
             page = self.click(
                 url=response.url,
-                buttons='Mehr laden', 
+                selector='div.category-grid > div > div > button', 
                 delay=20,
-                cookies='OK'
-            )
+                cookies='div#cookiebanner > div > div > div > button'
+            )[0]
         
         for item in page.css('div.category-grid > div > a::attr(href)'):
             yield Request(url=response.urljoin(item.get()), callback=self.parse_variation)
@@ -42,10 +42,7 @@ class FatboySpider(BaseSpider):
 
         for item in page.css('div.variant-picker--container > div > div > a::attr(href)'):
             yield self.parse_product(
-                response=self.page(
-                    url=response.urljoin(item.get()),
-                    delay=20
-                ),
+                response=self.page(url=response.urljoin(item.get()), delay=20),
                 parent=page.css('div.product-attributes > dl > dd:nth-child(2)').get()
             )
 

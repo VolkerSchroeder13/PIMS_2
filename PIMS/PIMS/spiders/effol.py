@@ -28,8 +28,8 @@ class EffolSpider(BaseSpider):
                     url=response.url,
                     select='div#sizeBoxes > select',
                     option=item.get(),
-                    delay=20,
-                    cookies='Alle akzeptieren'
+                    delay=10,
+                    cookies='#cookiefirst-root > div.cf1e63.notranslate.cf20Ti.cf3UN0 > div > div.cfAdwL.cf7ddU > div:nth-child(2) > div.cf3Tgk.cf2pAE.cf1IKf > div.cf1lHZ.cf2L3T > button'
                 ),
                 parent=response.css('div.prodCode > div > span').get()
             )
@@ -37,7 +37,7 @@ class EffolSpider(BaseSpider):
     def parse_product(self, response, parent):
         i = ItemLoader(item=Product(), selector=response)
         
-        i.context['prefix'] = 'EQ'
+        i.context['prefix'] = 'EF'
         i.add_value('address', self.address)
         i.add_value('brand', self.name)
         i.add_css('id', 'div.prodCode > div > span')
@@ -45,7 +45,7 @@ class EffolSpider(BaseSpider):
         i.add_value('parent', parent)
         i.add_css('title', 'div.prodTitle > div > h1')
         i.add_css('price', 'div.prodPrice > span.priceValue')
-        i.add_css('size', 'div.prodWeight > span')
+        i.add_css('size', 'div.weight > div > span')
         i.add_css('time', 'p.delivery-time-info')
         
         i.add_css('selector', 'div.pathLine > div > a:not(:last-child)')
