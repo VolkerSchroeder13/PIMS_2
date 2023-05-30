@@ -17,12 +17,12 @@ class FeliciSpider(BaseSpider):
 
     def parse_variation(self, response):
         for item in response.css('select#groesse > option::attr(value)'):
-            self.parse_product(
+            yield self.parse_product(
                 response=self.select(
                     url=response.url,
                     select='select#groesse',
                     option=item.get(),
-                    delay=20
+                    delay=10
                 ),
                 parent=response.css('span.sku').get()
             )
@@ -59,6 +59,6 @@ class FeliciSpider(BaseSpider):
         i.add_css('content_4_html', 'div#tab-additional_information')
         
         for img in response.css('div.woocommerce-product-gallery__image > img::attr(src)'):
-            i.add_value('image_urls', response.urljoin(img.get()))
+            i.add_value('image_urls', img.get())
 
-        yield i.load_item()
+        return i.load_item()
