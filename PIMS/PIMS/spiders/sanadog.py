@@ -12,12 +12,6 @@ class SanadogSpider(BaseSpider):
     allowed_domains = ['sanadog.com']
     start_urls = ['https://sanadog.com/']
 
-    counter_products = 0
-    counter_variations = 0
-    counter_no_variations = 0
-    counter_started = 0
-    counter_finished = 0
-
     def parse(self, response):
         for item in response.css('ul.site-nav a::attr(href)'):
             yield Request(url=response.urljoin(item.get()), callback=self.parse_category)
@@ -25,20 +19,14 @@ class SanadogSpider(BaseSpider):
     def parse_category(self, response):
         page = self.page_scroll_down(url=response.url, delay=4)
         for item in page.css('div.product-collection div.product-bottom a.product-title::attr(href)'):
-            self.counter_products += 1
             yield Request(url=response.urljoin(item.get()), callback=self.parse_variation)
-            # yield Request(url=response.urljoin(item.get()), callback=self.parse_product, cb_kwargs=dict(parent=None))
 
     def parse_variation(self, response):
         page = self.page(url=response.url, delay=4)
         root = page.css('div.sku-product > span::text').get()
-        print(f'    DEBUG pv {response.url}')
-        print(f'    DEBUG pv root {root}')
         vars = page.css('div.swatch-element:not(.soldout) > input.text::attr(data-value-sticky)').getall()
         vars.append('')
-        print(f'    DEBUG pv vars {vars}')
         for item in vars:
-            self.counter_variations += 1
             yield Request(
                 url=(response.url+'?variant='+item),
                 callback=self.parse_product,
@@ -47,25 +35,20 @@ class SanadogSpider(BaseSpider):
 
 
     def parse_product(self, response, parent):
-        self.counter_started += 1
-        print(f'    DEBUG pp {response.url}')
-        print(f'    DEBUG root {parent}')
         page = self.page(url=response.url, delay=4)
 
         i = ItemLoader(item=Product(), selector=page)
 
-        # TODO add SA prefix here and remove SANA prefix from id
         i.context['prefix'] = 'SA'
         i.add_value('address', self.address)
         i.add_value('brand', self.name)
         id = page.css('div.sku-product > span::text').get()
         i.add_value('id', id.replace('SANA', ''))
         i.add_value('sid', id.replace('SANA', ''))
-        i.add_value('parent', parent)
+        i.add_value('parent', parent.replace('SANA', 'SA'))
         i.add_css('title', 'h1.product-title > span')
         price = float(page.css('div.prices > input::attr(value)').get()) / 100
         i.add_value('price', str(price).replace('.', ','))
-        # size = str(page.css('div.header.a- > :nth-child(2)::text').get()).replace('.', '')
         i.add_css('size', 'div.header.a- > :nth-child(2)::text')
         # TODO? add price time
 
@@ -112,11 +95,3 @@ class SanadogSpider(BaseSpider):
             i.add_value('image_urls', response.urljoin(img.get()))
 
         yield i.load_item()
-        self.counter_finished += 1
-        print(f'    DEBUG counter_finished {self.counter_finished}')
-        print(f'    DEBUG counter_started {self.counter_started}')
-        print(f'    DEBUG counter_products {self.counter_products}')
-        print(f'    DEBUG counter_variations {self.counter_variations}')
-        print(f'    DEBUG counter_no_variations {self.counter_no_variations}')
-        print(f'    DEBUG pp done {response.url}')
-
