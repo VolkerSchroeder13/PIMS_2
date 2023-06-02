@@ -12,8 +12,8 @@ class HeilkraftSpider(BaseSpider):
     start_urls = ['https://heilkraft.online']
 
     def parse(self, response):
-        item = response.css('ul.navigation--list > li > a::attr(href)')
-        yield Request(url=response.urljoin(item.get()), callback=self.parse_category)
+        for item in response.css('ul.navigation--list > li > a::attr(href)'):
+            yield Request(url=response.urljoin(item.get()), callback=self.parse_category)
 
     def parse_category(self, response):
         for item in response.css('div.product--info > a::attr(href)'):
