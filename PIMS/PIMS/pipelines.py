@@ -114,6 +114,7 @@ class DatabasePipeline:
         result.title = item['title']
         result.price = item['price']
         result.size = item['size']
+        result.amount = item['amount']
         result.unit = item['unit']
         result.time = item['time']
         result.date = item['date']
@@ -158,6 +159,7 @@ class DatabasePipeline:
                 title = item['title'],
                 price = item['price'],
                 size = item['size'],
+                amount = item['amount'],
                 unit = item['unit'],
                 time = item['time'],
                 date = item['date'],
@@ -227,7 +229,7 @@ class ProductPipeline:
     """
     def value(self, text):
         text = text.replace(',', '.')
-        return findall(r'[-+]?(?:\d*\.\d+|\d+)', text)[0]
+        return findall(r'[-+]?(?:\d*\.\d+|\d+)', text)
 
     """
     | Die Methode size überprüft ob eine Größe/Einheit gegeben
@@ -240,10 +242,14 @@ class ProductPipeline:
         size = self.value(item['size'])
         unit = self.unit(item['size'])
 
-        if size != None and unit != None:
+        if len(size) == 1 and unit != None:
             item['unit'] = unit
-            item['size'] = size
-        else: 
+            item['size'] = size[0]
+        elif len(size) == 2 and unit != None:
+            item['unit'] = unit
+            item['size'] = int(size[0]) * int(size[1])
+        else:
+            item['amount'] = item['size']
             item['unit'] = None
             item['size'] = None
 
@@ -261,7 +267,6 @@ class ProductPipeline:
             if txt == 'kilogramm': return 'Kilogramm'
             if txt == 'g': return 'Gramm'
             if txt == 'gramm': return 'Gramm'
-            if txt == 'kapseln': return 'Kapseln'
 
     """
     | Die Methode price setzt den Wert auf den gefundenen
@@ -271,7 +276,7 @@ class ProductPipeline:
         if item['price'] == None:
             return
         
-        item['price'] = self.value(item['price'])
+        item['price'] = self.value(item['price'])[0]
 
     """
     | Die Methode date sucht ein Datum aus den gefunden String.
