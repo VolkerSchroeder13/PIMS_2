@@ -18,6 +18,7 @@ class Product(Base):
     title = Column(String(255))
     price = Column(Float)
     size = Column(Float)
+    amount = Column(String(255))
     unit = Column(String(255))
     time = Column(String(255))
     date = Column(String(255))
