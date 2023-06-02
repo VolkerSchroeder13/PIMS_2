@@ -6,7 +6,7 @@ import json
 
 class GaloppSpider(Spider):
 
-    name = 'galopp'
+    name = 'Galopp'
     address = '7000017'
     allowed_domains = ['galopp-pferdefutter.de']
     start_urls = ['https://www.galopp-pferdefutter.de/']

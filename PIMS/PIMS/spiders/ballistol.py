@@ -6,7 +6,7 @@ from scrapy import Request
 
 class BallistolSpider(BaseSpider):
 
-    name = 'ballistol'
+    name = 'Ballistol'
     address = '7025200'
     allowed_domains = ['ballistol.de']
     start_urls = ['https://ballistol.de/']

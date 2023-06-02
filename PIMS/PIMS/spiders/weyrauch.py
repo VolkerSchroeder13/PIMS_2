@@ -6,7 +6,7 @@ from scrapy import Request
 
 class WeyrauchSpider(BaseSpider):
 
-    name = 'weyrauch'
+    name = 'Weyrauch'
     address = '7017800'
     allowed_domains = ['shop.dr-susanne-weyrauch.de']
     start_urls = ['https://shop.dr-susanne-weyrauch.de']

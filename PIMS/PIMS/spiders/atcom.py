@@ -6,7 +6,7 @@ from scrapy import Request
 
 class AtcomSpider(BaseSpider):
 
-    name = 'atcom'
+    name = 'Atcom'
     address = '7018700B6'
     allowed_domains = ['atcomhorse.de']
     start_urls = ['https://www.atcomhorse.de']

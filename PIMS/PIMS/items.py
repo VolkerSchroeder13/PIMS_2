@@ -10,12 +10,7 @@ def check_html(text):
     return sub(r'<(?!p|/p|h[1-6]|/h[1-6]|ul|/ul|ol|/ol|li|/li|u|/u|strong|/strong).*?>','', text)
 
 def check_text(text):
-    values = ['  ', '\n', '\r', '\t', ';', '®', '&amp']
-    for x in values: text = text.replace(x, '')
-    return text
-
-def check_title(text):
-    values = ['!', '%', '–']
+    values = ['  ', '\n', '\r', '\t', ';', '®', '&amp', '!', '%', '–', '{', '}', '[', ']']
     for x in values: text = text.replace(x, '')
     return text
 

@@ -1,12 +1,11 @@
-from PIMS.spiders.base import BaseSpider
 from scrapy.loader import ItemLoader
+from scrapy import Request, Spider
 from PIMS.items import Product
-from scrapy import Request
 
 
-class DerbySpider(BaseSpider):
+class DerbySpider(Spider):
 
-    name = 'derby'
+    name = 'Derby'
     address = '7000017'
     allowed_domains = ['derby.de']
     start_urls = ['https://www.derby.de']
@@ -22,7 +21,7 @@ class DerbySpider(BaseSpider):
     def parse_product(self, response):
         i = ItemLoader(item=Product(), response=response)
         
-        i.context['prefix'] = 'EQ'
+        i.context['prefix'] = 'EO'
         i.add_value('address', self.address)
         i.add_value('brand', self.name)
         i.add_css('id', 'div.properties > div:nth-child(2) > div.values')

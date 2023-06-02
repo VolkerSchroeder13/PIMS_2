@@ -274,6 +274,7 @@ class ProductPipeline:
         item['price'] = self.value(item['price'])
 
     """
+    | Die Methode date sucht ein Datum aus den gefunden String.
     """
     def date(self, item):
         if item['time'] == None:
@@ -288,6 +289,8 @@ class ProductPipeline:
             item['date'] = date.strftime('%d.%m.%Y')
 
     """
+    | Speichert den gefunden Selektor in der Datenbank, 
+    | falls dieser noch nicht in der Datenbank vorhanden ist.
     """
     def selector(self, item):
         if item['selector'] == None:
@@ -298,6 +301,9 @@ class ProductPipeline:
             self.session.commit()
 
     """
+    | Überprüft ob der gefundene Selektor einer Kategorie 
+    | zugewiesen wurde. Falls dies zutrifft wird das Produkt mit
+    | der Kategorie in einer M-N Relation erstellt.
     """
     def category(self, item):
         if item['selector'] == None:

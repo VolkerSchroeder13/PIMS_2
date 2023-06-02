@@ -6,7 +6,7 @@ from scrapy import Request
 
 class EffolSpider(BaseSpider):
 
-    name = 'effol'
+    name = 'Effol'
     address = '7022500'
     allowed_domains = ['effol.com']
     start_urls = ['https://www.effol.com/de-de/de_DE/']
