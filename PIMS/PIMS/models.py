@@ -66,6 +66,7 @@ class ProductCategory(Base):
     brand = Column(String(255))
     category = Column(Integer, ForeignKey(Category.id))
 
+
 class Image(Base):
     __tablename__ = "image"
     id = Column(Integer, primary_key=True, autoincrement=True)

@@ -6,7 +6,7 @@ from scrapy import Request
 
 class FeliciSpider(BaseSpider):
 
-    name = 'felici-caballi'
+    name = 'Felici-caballi'
     address = '7000096'
     allowed_domains = ['felici-caballi.de']
     start_urls = ['https://www.felici-caballi.de/shop/']

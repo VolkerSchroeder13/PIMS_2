@@ -5,7 +5,7 @@ from PIMS.items import Product
 
 class HövelerSpider(Spider):
 
-    name = 'höveler'
+    name = 'Höveler'
     address = '7000017'
     allowed_domains = ['hoeveler.com']
     start_urls = ['https://www.hoeveler.com/home.html']

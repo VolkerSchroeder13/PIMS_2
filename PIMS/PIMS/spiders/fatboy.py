@@ -6,7 +6,7 @@ from scrapy import Request
 
 class FatboySpider(BaseSpider):
 
-    name = 'fatboy'
+    name = 'Fatboy'
     address = '7022600'
     allowed_domains = ['fatboy.com']
     start_urls = ['https://www.fatboy.com/de-de']

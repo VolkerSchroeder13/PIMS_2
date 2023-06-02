@@ -5,7 +5,7 @@ from PIMS.items import Product
 
 class AgrobsSpider(Spider):
 
-    name = 'agrobs'
+    name = 'Agrobs'
     address = '7000083'
     allowed_domains = ['agrobs.de']
     start_urls = ['https://www.agrobs.de/de/']
