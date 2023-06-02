@@ -47,12 +47,12 @@ class Product(Item):
     title_5 = Field()
     title_6 = Field()
 
-    content_1 = Field(input_processor=Map(remove_tags, check_text), output_processor=Join('<br>'))
-    content_2 = Field(input_processor=Map(remove_tags, check_text), output_processor=Join('<br>'))
-    content_3 = Field(input_processor=Map(remove_tags, check_text), output_processor=Join('<br>'))
-    content_4 = Field(input_processor=Map(remove_tags, check_text), output_processor=Join('<br>'))
-    content_5 = Field(input_processor=Map(remove_tags, check_text), output_processor=Join('<br>'))
-    content_6 = Field(input_processor=Map(remove_tags, check_text), output_processor=Join('<br>'))
+    content_1 = Field(input_processor=Map(remove_tags, check_text), output_processor=Join('\n'))
+    content_2 = Field(input_processor=Map(remove_tags, check_text), output_processor=Join('\n'))
+    content_3 = Field(input_processor=Map(remove_tags, check_text), output_processor=Join('\n'))
+    content_4 = Field(input_processor=Map(remove_tags, check_text), output_processor=Join('\n'))
+    content_5 = Field(input_processor=Map(remove_tags, check_text), output_processor=Join('\n'))
+    content_6 = Field(input_processor=Map(remove_tags, check_text), output_processor=Join('\n'))
 
     content_1_html = Field(input_processor=Map(check_text, check_html), output_processor=Join())
     content_2_html = Field(input_processor=Map(check_text, check_html), output_processor=Join())
