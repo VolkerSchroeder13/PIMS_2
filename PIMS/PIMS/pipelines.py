@@ -13,7 +13,7 @@ class StoragePipeline(ImagesPipeline):
     | Die Methode file_path erzeugt einen Dateipfad für erhaltende Bilder.
     """
     def file_path(self, request, response=None, info=None, item=None):
-        return 'Storage/' + item['id'] + '/' + os.path.basename(urlparse(request.url).path) 
+        return 'Storage/' + item['id'] + '/' + os.path.basename(urlparse(request.url).path)
 
 
 class ExportPipeline(ImagesPipeline):
@@ -21,7 +21,7 @@ class ExportPipeline(ImagesPipeline):
     def get_image(self, images, index):
         if len(images) > index:
             return images[index]
-        else: 
+        else:
             return None
 
     def file_path(self, request, response=None, info=None, item=None):
@@ -29,12 +29,12 @@ class ExportPipeline(ImagesPipeline):
 
     def item_completed(self, results, item, info):
         images = [x['path'] for ok, x in results if ok]
-        
+
         for i in range(len(images)):
             images[i] = images[i].replace('Export/', '')
 
         session = Session(create_engine('mysql+pymysql://root:root@127.0.0.1:3306/pims'))
-        result = session.exec(select(Image).where(Image.product == item['id'])).first()        
+        result = session.exec(select(Image).where(Image.product == item['id'])).first()
 
         if result is None:
             session.add(
@@ -82,7 +82,7 @@ class DatabasePipeline:
     """
     | Bei der initialiseren der Klasse ProductPipeline wird die
     | Methode __init__ aufgerufen, welche eine Verbindung zur Datenbank
-    | aufbaut und alle Entitäten erstellt. 
+    | aufbaut und alle Entitäten erstellt.
     """
     def __init__(self):
         self.engine = create_engine('mysql+pymysql://root:root@127.0.0.1:3306/pims')
@@ -90,14 +90,14 @@ class DatabasePipeline:
         Base.metadata.create_all(self.engine)
 
     """
-    | Diese Methode überprüft ob ein gegebenes Produkt bereits in 
+    | Diese Methode überprüft ob ein gegebenes Produkt bereits in
     | Datenbank existiert.
     """
     def check_item(self, item):
         result = self.session.exec(select(Product).where(Product.id == item['id'])).first()
-        if result is None: 
+        if result is None:
             return True
-        else: 
+        else:
             return False
 
     """
@@ -105,7 +105,7 @@ class DatabasePipeline:
     """
     def update_item(self, item):
         result = self.session.exec(select(Product).where(Product.id == item['id'])).one()
-        
+
         result.brand = item['brand']
         result.address = item['address']
         result.sid = item['sid']
@@ -146,8 +146,8 @@ class DatabasePipeline:
     """
     def insert_item(self, item):
         if item['id'] is None:
-            return 
-        
+            return
+
         self.session.add(
             Product(
                 brand = item['brand'],
@@ -204,7 +204,7 @@ class ProductPipeline:
         self.engine = create_engine('mysql+pymysql://root:root@127.0.0.1:3306/pims')
         self.session = Session(self.engine)
 
-    
+
     def check_product(self, item):
         result = self.session.exec(select(Product).where(Product.id == item['id'])).first()
         if result is None: return True
@@ -228,6 +228,7 @@ class ProductPipeline:
     | liefert diese zurück für weitere Verwendungen.
     """
     def value(self, text):
+        text = text.replace('.', '') # remove the dots (thousands separator)
         text = text.replace(',', '.')
         return findall(r'[-+]?(?:\d*\.\d+|\d+)', text)
 
@@ -267,6 +268,9 @@ class ProductPipeline:
             if txt == 'kilogramm': return 'Kilogramm'
             if txt == 'g': return 'Gramm'
             if txt == 'gramm': return 'Gramm'
+        if unit.lower()[-1] == 'g': 
+          return 'Gramm' # for smth like: 500g
+
 
     """
     | Die Methode price setzt den Wert auf den gefundenen
@@ -275,8 +279,9 @@ class ProductPipeline:
     def price(self, item):
         if item['price'] == None:
             return
-        
+
         item['price'] = self.value(item['price'])[0]
+
 
     """
     | Die Methode date sucht ein Datum aus den gefunden String.
@@ -284,7 +289,7 @@ class ProductPipeline:
     def date(self, item):
         if item['time'] == None:
             return
-        
+
         result = findall(r'\d{1,2}-\d{1,2}-\d{4}', item['time'])
 
         if len(result) == 0:
@@ -313,7 +318,7 @@ class ProductPipeline:
     def category(self, item):
         if item['selector'] == None:
             return
-        
+
         if self.check_product(item):
             return
 
