@@ -47,8 +47,9 @@ class BaseSpider(Spider):
             sleep(delay / 2)
 
             content = page.content()
-            page.close
-            browser.close
+
+            page.close()
+            browser.close()
 
             return Selector(text=content)
 
@@ -59,28 +60,10 @@ class BaseSpider(Spider):
             page.goto(url)
 
             if cookies is not None:
-                page.get_by_text(cookies).click()
+                page.locator(selector=cookies).click()
                 sleep(delay)
 
             page.select_option(selector=select, value=option)
-            sleep(delay)
-
-            content = page.content()
-            page.close()
-
-            return Selector(text=content)
-
-    def click(self, url, button, delay, cookies=None):
-        with sync_playwright() as p:
-            browser = p.chromium.launch(headless=True)
-            page = browser.new_page()
-            page.goto(url)
-
-            if cookies is not None:
-                page.get_by_text(cookies).click()
-                sleep(delay)
-
-            page.get_by_role('button').get_by_text(button).click()
             sleep(delay)
 
             content = page.content()
@@ -95,7 +78,7 @@ class BaseSpider(Spider):
             page.goto(url)
 
             if cookies is not None:
-                page.get_by_text(cookies).click()
+                page.locator(selector=cookies).click()
                 sleep(delay)
 
             pages = []

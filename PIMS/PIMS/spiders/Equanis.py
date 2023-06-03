@@ -5,13 +5,13 @@ from PIMS.items import Product
 
 class EquanisSpider(Spider):
 
-    name = 'equanis'
+    name = 'Equanis'
     address = '7028800'
     allowed_domains = ['equanis.de']
     start_urls = ['https://www.equanis.de']
 
     def parse(self, response):
-        item = response.css('#menu-item-6481 > a::attr(href)')
+        item = response.css('li#menu-item-21857 > a::attr(href)')
         yield Request(url=response.urljoin(item.get()), callback=self.parse_category)
 
     def parse_category(self, response):

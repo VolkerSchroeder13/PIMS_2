@@ -18,6 +18,7 @@ class Product(Base):
     title = Column(String(255))
     price = Column(Float)
     size = Column(Float)
+    amount = Column(String(255))
     unit = Column(String(255))
     time = Column(String(255))
     date = Column(String(255))
@@ -65,6 +66,7 @@ class ProductCategory(Base):
     product = Column(String(255), ForeignKey(Product.id))
     brand = Column(String(255))
     category = Column(Integer, ForeignKey(Category.id))
+
 
 class Image(Base):
     __tablename__ = "image"

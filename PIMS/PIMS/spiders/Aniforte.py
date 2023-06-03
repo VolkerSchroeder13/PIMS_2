@@ -6,7 +6,7 @@ import json
 
 class AniforteSpider(Spider):
 
-    name = 'aniforte'
+    name = 'Aniforte'
     address = '7008600'
     allowed_domains = ['aniforte.de']
     start_urls = ['https://www.aniforte.de']

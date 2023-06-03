@@ -6,7 +6,7 @@ from scrapy import Request
 
 class ErlerZimmerSpider(BaseSpider):
 
-    name = 'erler-zimmer'
+    name = 'Erler-zimmer'
     address = '7021000'
     allowed_domains = ['erler-zimmer.de']
     start_urls = ['https://erler-zimmer.de/produkte/']

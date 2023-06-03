@@ -5,7 +5,7 @@ from PIMS.items import Product
 
 class EquinovaSpider(Spider):
 
-    name = 'equinova'
+    name = 'Equinova'
     address = '7000017'
     allowed_domains = ['equinova.de']
     start_urls = ['https://www.equinova.de/']
