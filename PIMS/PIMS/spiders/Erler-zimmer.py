@@ -43,10 +43,10 @@ class ErlerZimmerSpider(BaseSpider):
         i.add_value('title_1', 'Vorteile')
         i.add_value('title_2', 'Beschreibung')
         
-        i.add_css('content_1', 'div.usp-artikelbox')
+        i.add_css('content_1', 'div#usp-artikelbox')
         i.add_css('content_2', 'div.content--description')
         
-        i.add_css('content_1_html', 'div.div.usp-artikelbox')
+        i.add_css('content_1_html', 'div#usp-artikelbox')
         i.add_css('content_2_html', 'div.content--description')
         
         for img in response.css('span.image--media > img::attr(srcset)'):
