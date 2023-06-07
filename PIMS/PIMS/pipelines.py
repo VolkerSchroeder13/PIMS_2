@@ -280,7 +280,10 @@ class ProductPipeline:
         if item['price'] == None:
             return
 
-        item['price'] = self.value(item['price'])[0]
+        price = self.value(item['price'])[0]
+        
+        if price is not None:
+            item['price'] = price
 
 
     """
