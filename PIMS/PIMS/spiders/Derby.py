@@ -45,7 +45,7 @@ class DerbySpider(Spider):
         i.add_css('content_2_html', 'div.product-detail-description')
         i.add_css('content_3_html', 'div.product-detail-custom-field')
 
-        for img in response.css('div.gallery-slider-item > img::attr(srcset)'):
+        for img in response.css('div.gallery-slider-item > img::attr(content)'):
             i.add_value('image_urls', img.get())
         
         return i.load_item()

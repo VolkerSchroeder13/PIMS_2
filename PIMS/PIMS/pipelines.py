@@ -228,7 +228,7 @@ class ProductPipeline:
     | liefert diese zurück für weitere Verwendungen.
     """
     def value(self, text):
-        text = text.replace('.', '') # remove the dots (thousands separator)
+        text = text.replace('.', '')
         text = text.replace(',', '.')
         return findall(r'[-+]?(?:\d*\.\d+|\d+)', text)
 
