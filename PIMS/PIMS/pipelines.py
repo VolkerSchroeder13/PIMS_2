@@ -204,7 +204,6 @@ class ProductPipeline:
         self.engine = create_engine('mysql+pymysql://root:root@127.0.0.1:3306/pims')
         self.session = Session(self.engine)
 
-
     def check_product(self, item):
         result = self.session.exec(select(Product).where(Product.id == item['id'])).first()
         if result is None: return True
@@ -269,7 +268,7 @@ class ProductPipeline:
             if txt == 'g': return 'Gramm'
             if txt == 'gramm': return 'Gramm'
         if unit.lower()[-1] == 'g': 
-          return 'Gramm' # for smth like: 500g
+          return 'Gramm' 
 
 
     """

@@ -52,6 +52,7 @@ class AniforteSpider(Spider):
         i.add_value('id', data['sku'])
         i.add_value('sid', data['sku'])
         i.add_value('parent', parent)
+        i.add_value('ean', data['gtin13'])
         i.add_css('title', 'h2.ProductMeta__Title')
         i.add_css('price', 'span.ProductMeta__Price')
         i.add_css('size', 'div.ProductForm__Variants > div.ProductForm__Option > ul > li > input[checked]::attr(value)')
