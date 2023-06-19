@@ -6,9 +6,9 @@ from time import sleep
 import json
 
 
-class SanadogSpider(BaseSpider):
+class TalesandtailsSpider(BaseSpider):
     custom_settings = {
-        "DOWNLOAD_DELAY": "2",
+        "DOWNLOAD_DELAY": "1.5",
         "USER_AGENT": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/113.0"
     }
 
@@ -16,6 +16,9 @@ class SanadogSpider(BaseSpider):
     address = '7028700'
     allowed_domains = ['talesandtails.de']
     start_urls = ['https://talesandtails.de/collections/']
+
+    visited_products = []
+    visited_variations = []
 
     def search_json_item(self, contained_str, page, script_selector = 'script.product-json::text'):
         json_item = None
@@ -40,9 +43,16 @@ class SanadogSpider(BaseSpider):
         for n in range(page_count):
             yield Request(url=f'{response.url}?page={n+1}', callback=self.parse_category)
 
+
     def parse_category(self, response):
+        urls = []
         for href in response.css('a.grid-view-item__link::attr(href)').getall():
-            yield Request(url=response.urljoin(href), callback=self.parse_variation)
+            urls.append(response.urljoin(href))
+        urls = list(filter(lambda url: url not in self.visited_products, urls))
+        self.visited_products.extend(urls)
+        for url in urls:
+            yield Request(url=url, callback=self.parse_variation)
+
 
     def parse_variation(self, response):
         title = response.css("span.gf_product-title::text").get()
@@ -56,6 +66,8 @@ class SanadogSpider(BaseSpider):
         vars = []
         for var in json['variants']:
             vars.append(str(var['id']))
+        vars = list(filter(lambda var: var not in self.visited_variations, vars))
+        self.visited_variations.extend(vars)
         for var in vars:
             yield Request(
                 url=(response.url+'?variant='+var),
