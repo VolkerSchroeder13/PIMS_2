@@ -28,7 +28,17 @@ class SanadogSpider(BaseSpider):
         for href in response.css('a.collection-grid-item__link::attr(href)').getall():
             if(href == '#'):
                 continue
-            yield Request(url=response.urljoin(href), callback=self.parse_category)
+            yield Request(url=response.urljoin(href), callback=self.parse_pages)
+
+    def parse_pages(self, response):
+        page_count = response.css('div#Collection > ul.pagination > li:nth-of-type(2)::text').get()
+        if page_count == None:
+            page_count = 1
+        else:
+            page_count = int(page_count.replace(' ', '').split('von')[-1][0])
+
+        for n in range(page_count):
+            yield Request(url=f'{response.url}?page={n+1}', callback=self.parse_category)
 
     def parse_category(self, response):
         for href in response.css('a.grid-view-item__link::attr(href)').getall():
