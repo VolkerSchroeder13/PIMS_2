@@ -197,7 +197,6 @@ class DatabasePipeline:
             self.update_item(item)
         return item
 
-
 class ProductPipeline:
 
     def __init__(self):
@@ -267,8 +266,10 @@ class ProductPipeline:
             if txt == 'kilogramm': return 'Kilogramm'
             if txt == 'g': return 'Gramm'
             if txt == 'gramm': return 'Gramm'
-        if unit.lower()[-1] == 'g': 
-          return 'Gramm' 
+        if unit.lower()[-1] == 'g':
+          if unit.lower()[-2] == 'k':
+              return 'Kilogramm'
+          return 'Gramm' # for smth like: 500g
 
 
     """
@@ -301,7 +302,7 @@ class ProductPipeline:
             item['date'] = date.strftime('%d.%m.%Y')
 
     """
-    | Speichert den gefunden Selektor in der Datenbank, 
+    | Speichert den gefunden Selektor in der Datenbank,
     | falls dieser noch nicht in der Datenbank vorhanden ist.
     """
     def selector(self, item):
@@ -313,7 +314,7 @@ class ProductPipeline:
             self.session.commit()
 
     """
-    | Überprüft ob der gefundene Selektor einer Kategorie 
+    | Überprüft ob der gefundene Selektor einer Kategorie
     | zugewiesen wurde. Falls dies zutrifft wird das Produkt mit
     | der Kategorie in einer M-N Relation erstellt.
     """
