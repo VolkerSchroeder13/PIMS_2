@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Float, Text, Integer
+from sqlalchemy import Column, String, Float, Text, Integer, DECIMAL
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import *
 
@@ -16,7 +16,7 @@ class Product(Base):
     parent = Column(String(255))
     ean = Column(String(255))
     title = Column(String(255))
-    price = Column(Float)
+    price = Column(DECIMAL(10,2))
     size = Column(Float)
     amount = Column(String(255))
     unit = Column(String(255))

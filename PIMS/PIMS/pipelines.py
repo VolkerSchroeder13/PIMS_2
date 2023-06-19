@@ -197,13 +197,11 @@ class DatabasePipeline:
             self.update_item(item)
         return item
 
-
 class ProductPipeline:
 
     def __init__(self):
         self.engine = create_engine('mysql+pymysql://root:root@127.0.0.1:3306/pims')
         self.session = Session(self.engine)
-
 
     def check_product(self, item):
         result = self.session.exec(select(Product).where(Product.id == item['id'])).first()
@@ -228,7 +226,7 @@ class ProductPipeline:
     | liefert diese zurück für weitere Verwendungen.
     """
     def value(self, text):
-        text = text.replace('.', '') # remove the dots (thousands separator)
+        text = text.replace('.', '')
         text = text.replace(',', '.')
         return findall(r'[-+]?(?:\d*\.\d+|\d+)', text)
 
@@ -282,7 +280,10 @@ class ProductPipeline:
         if item['price'] == None:
             return
 
-        item['price'] = self.value(item['price'])[0]
+        price = self.value(item['price'])[0]
+        
+        if price is not None:
+            item['price'] = price
 
 
     """
