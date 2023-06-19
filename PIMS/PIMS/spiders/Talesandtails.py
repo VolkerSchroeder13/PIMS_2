@@ -101,8 +101,7 @@ class SanadogSpider(BaseSpider):
             desc_tabs = response.css("div.module > div > div.chevron div.elm > p > b::text").getall()
             desc_tabs_size = len(desc_tabs)
             desc_selector = 'article.item-content div.element-wrap div.elm.text-edit.gf-elm-left.gf-elm-left-lg.gf-elm-left-md.gf-elm-left-sm.gf-elm-left-xs.gf_gs-text-paragraph-1'
-        if desc_tabs_size > 0 and desc_tabs[-1] in ["So gefällt es unseren Kunden", "Bewertungen"]:
-            desc_tabs.pop()
+        desc_tabs = list(filter(lambda tab: tab not in ["So gefällt es unseren Kunden", "Bewertungen"], desc_tabs))
         for n in range(desc_tabs_size - 1):
             if n == 6: break
             i.add_value(f'title_{n+1}', desc_tabs[n])
