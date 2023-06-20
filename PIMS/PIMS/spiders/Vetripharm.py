@@ -34,7 +34,13 @@ class VetripharmSpider(BaseSpider):
             yield Request(url=response.urljoin(href), callback=self.parse_category)
 
     def parse_category(self, response):
-        pass
+        urls = []
+        for href in response.css('a.btn-success::attr(href)').getall():
+            urls.append(response.urljoin(href))
+        urls = list(filter(lambda url: url not in self.visited_products, urls))
+        self.visited_products.extend(urls)
+        for url in urls:
+            yield Request(url=url, callback=self.parse_variation)
 
     def parse_variation(self, response):
         pass
