@@ -31,19 +31,13 @@ class VetripharmSpider(BaseSpider):
         for href in response.css('li[title="produkte"] ul.uk-nav li a::attr(href)').getall():
             if(href == '#'):
                 continue
-            yield Request(url=response.urljoin(href), callback=self.parse_pages)
-
-    def parse_pages(self, response):
-        pass
-
+            yield Request(url=response.urljoin(href), callback=self.parse_category)
 
     def parse_category(self, response):
         pass
 
-
     def parse_variation(self, response):
         pass
-
 
     def parse_product(self, response, parent, variation):
         pass
