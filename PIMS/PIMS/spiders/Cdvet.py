@@ -7,7 +7,7 @@ from scrapy import Request
 class CdvetSpider(BaseSpider):
 
     name = 'Cdvet'
-    address = '7000010'
+    address = '7020700'
     allowed_domains = ['cdvet.de']
     start_urls = ['https://www.cdvet.de']
 
