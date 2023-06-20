@@ -28,7 +28,10 @@ class VetripharmSpider(BaseSpider):
         return json_item
 
     def parse(self, response):
-        pass
+        for href in response.css('li[title="produkte"] ul.uk-nav li a::attr(href)').getall():
+            if(href == '#'):
+                continue
+            yield Request(url=response.urljoin(href), callback=self.parse_pages)
 
     def parse_pages(self, response):
         pass
