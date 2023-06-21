@@ -43,7 +43,17 @@ class VetripharmSpider(BaseSpider):
             yield Request(url=url, callback=self.parse_variation)
 
     def parse_variation(self, response):
-        pass
+        quantity_select, type_select = response.css('select[name*="product_option"]::attr(name)').getall()
+        if(not quantity_select or not type_select): return
+        quantity_select_selector = f'select[name="{quantity_select}"]'
+        type_select_selector = f'select[name="{type_select}"]'
+        quantity_options = response.css(f'{quantity_select_selector} option::attr(value)').getall()
+        type_options = response.css(f'{type_select_selector} option::attr(value)').getall()
+        parent = response.css('span.sku::text').get()
+        for quantity in quantity_options:
+            for type in type_options:
+                page = self.multi_select(response.url, [quantity_select_selector, type_select_selector], [quantity, type], 1, 'a.cpnb-accept-btn')
+                yield self.parse_product(page, parent)
 
-    def parse_product(self, response, parent, variation):
+    def parse_product(self, page, parent):
         pass
