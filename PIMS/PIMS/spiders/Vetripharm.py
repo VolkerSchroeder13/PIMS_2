@@ -60,7 +60,7 @@ class VetripharmSpider(BaseSpider):
             type_options = response.css(f'{type_select_selector} option::attr(value)').getall()
             for quantity in quantity_options:
                 for type in type_options:
-                    page = self.multi_select(response.url, [quantity_select_selector, type_select_selector], [quantity, type], 1, 'a.cpnb-accept-btn')
+                    page = self.multi_select(response.url, [quantity_select_selector, type_select_selector], [quantity, type], .5, 'a.cpnb-accept-btn')
                     yield self.parse_product(page, parent)
 
     def parse_product(self, page, parent):
@@ -88,5 +88,23 @@ class VetripharmSpider(BaseSpider):
         i.add_value('title', f'{title} ({selected_type})')
         i.add_css('price', 'div.sale-price')
 
+        # # Descriptions
+        # desc_selector = 'div.gf_restabs > div.item-content'
+        # desc_tabs = response.css('ul > li.gf_tab div.elm::text').getall()
+        # desc_tabs_size = len(desc_tabs)
+        # if desc_tabs_size == 0:
+        #     desc_tabs = response.css("div.module > div > div.chevron div.elm > p > b::text").getall()
+        #     desc_tabs_size = len(desc_tabs)
+        #     desc_selector = 'article.item-content div.element-wrap div.elm.text-edit.gf-elm-left.gf-elm-left-lg.gf-elm-left-md.gf-elm-left-sm.gf-elm-left-xs.gf_gs-text-paragraph-1'
+        # desc_tabs = list(filter(lambda tab: tab not in ["So gefällt es unseren Kunden", "Bewertungen"], desc_tabs))
+        # for n in range(desc_tabs_size - 1):
+        #     if n == 6: break
+        #     i.add_value(f'title_{n+1}', desc_tabs[n])
+        #     i.add_css(f'content_{n+1}', f'{desc_selector}:nth-of-type({n+1})')
+        #     i.add_css(f'content_{n+1}_html', f'{desc_selector}:nth-of-type({n+1})')
+
+        # # Product images
+        # for img in response.css('div.gf_product-images-list > a > div.gf_product-image-thumb > img::attr(src)').getall():
+        #     i.add_value('image_urls', response.urljoin(img))
 
         return i.load_item()
