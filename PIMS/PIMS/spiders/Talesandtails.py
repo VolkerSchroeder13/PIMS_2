@@ -121,7 +121,7 @@ class TalesandtailsSpider(BaseSpider):
             i.add_css(f'content_{n+1}_html', f'{desc_selector}:nth-of-type({n+1})')
 
         # Product images
-        for img in response.css('div.gf_product-images-list > a > div.gf_product-image-thumb > img::attr(src)').getall():
+        for img in response.css('div.gf_product-images-list > a img::attr(src)').getall():
             i.add_value('image_urls', response.urljoin(img))
 
         yield i.load_item()
