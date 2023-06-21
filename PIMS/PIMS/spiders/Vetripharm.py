@@ -64,4 +64,29 @@ class VetripharmSpider(BaseSpider):
                     yield self.parse_product(page, parent)
 
     def parse_product(self, page, parent):
-        pass
+        i = ItemLoader(item=Product(), selector=page)
+
+        # General info
+        i.context['prefix'] = 'VP'
+        i.add_value('address', self.address)
+        i.add_value('brand', self.name)
+        if not page.css('span.sku').get():
+            print('    DEBUG NO SKU')
+        i.add_css('id', 'span.sku')
+        i.add_css('sid', 'span.sku')
+        i.add_value('parent', parent)
+
+        selections = page.css('option[selected=selected]::text').getall()
+        selected_quantity = None
+        selected_type = None
+        if len(selections) == 1:
+            selected_quantity = page.css('option[selected=selected]::text').getall()
+        elif len(selections) == 2:
+            selected_quantity, selected_type = page.css('option[selected=selected]::text').getall()
+        i.add_value('size', selected_quantity)
+        title = page.css('h1.product-title').get()
+        i.add_value('title', f'{title} ({selected_type})')
+        i.add_css('price', 'div.sale-price')
+
+
+        return i.load_item()
