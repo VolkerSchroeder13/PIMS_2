@@ -43,17 +43,25 @@ class VetripharmSpider(BaseSpider):
             yield Request(url=url, callback=self.parse_variation)
 
     def parse_variation(self, response):
-        quantity_select, type_select = response.css('select[name*="product_option"]::attr(name)').getall()
-        if(not quantity_select or not type_select): return
-        quantity_select_selector = f'select[name="{quantity_select}"]'
-        type_select_selector = f'select[name="{type_select}"]'
-        quantity_options = response.css(f'{quantity_select_selector} option::attr(value)').getall()
-        type_options = response.css(f'{type_select_selector} option::attr(value)').getall()
         parent = response.css('span.sku::text').get()
-        for quantity in quantity_options:
-            for type in type_options:
-                page = self.multi_select(response.url, [quantity_select_selector, type_select_selector], [quantity, type], 1, 'a.cpnb-accept-btn')
-                yield self.parse_product(page, parent)
+        selects = response.css('select[name*="product_option"]::attr(name)').getall()
+        if len(selects) == 1:
+            quantity_select = selects[0]
+            quantity_select_selector = f'select[name="{quantity_select}"]'
+            quantity_options = response.css(f'{quantity_select_selector} option::attr(value)').getall()
+            for quantity in quantity_options:
+                    page = self.select(response.url, quantity_select_selector, quantity, 1, 'a.cpnb-accept-btn')
+                    yield self.parse_product(page, parent)
+        elif len(selects) == 2:
+            quantity_select, type_select = selects
+            quantity_select_selector = f'select[name="{quantity_select}"]'
+            type_select_selector = f'select[name="{type_select}"]'
+            quantity_options = response.css(f'{quantity_select_selector} option::attr(value)').getall()
+            type_options = response.css(f'{type_select_selector} option::attr(value)').getall()
+            for quantity in quantity_options:
+                for type in type_options:
+                    page = self.multi_select(response.url, [quantity_select_selector, type_select_selector], [quantity, type], 1, 'a.cpnb-accept-btn')
+                    yield self.parse_product(page, parent)
 
     def parse_product(self, page, parent):
         pass
