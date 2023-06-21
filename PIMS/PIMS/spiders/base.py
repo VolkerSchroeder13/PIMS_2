@@ -77,7 +77,7 @@ class BaseSpider(Spider):
     def multi_select(self, url, selects, options, delay, cookies=None):
         if len(selects) != len(options): return None
         with sync_playwright() as p:
-            browser = p.chromium.launch(headless=False)
+            browser = p.chromium.launch(headless=True)
             page = browser.new_page()
             page.goto(url)
 
