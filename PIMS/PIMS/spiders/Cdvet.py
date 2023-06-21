@@ -7,7 +7,7 @@ from scrapy import Request
 class CdvetSpider(BaseSpider):
 
     name = 'Cdvet'
-    address = '7000010'
+    address = '7020700'
     allowed_domains = ['cdvet.de']
     start_urls = ['https://www.cdvet.de']
 
@@ -23,7 +23,7 @@ class CdvetSpider(BaseSpider):
         pages = self.click(
             url=response.url,
             selector='div.product-detail-configurator-options > div > label',
-            delay=10,
+            delay=20,
             cookies='button#ccAcceptButton'
         )
 
@@ -42,7 +42,7 @@ class CdvetSpider(BaseSpider):
         i.add_value('parent', parent)
         i.add_css('title', 'h1.product-detail-name')
         i.add_css('price', 'p.product-detail-price')
-        i.add_css('size', 'span.price-unit-content')
+        i.add_value('size', response.css('span.price-unit-content').get().replace('.',','))
         i.add_css('time', 'p.delivery-information')
 
         i.add_css('selector', 'span.breadcrumb--title')
@@ -65,7 +65,7 @@ class CdvetSpider(BaseSpider):
         i.add_css('content_4_html', 'div.product-detail-properties')
         i.add_css('content_5_html', 'div.product-detail-manufacturer')
 
-        for img in response.css('div.gallery-slider-single-image > img::attr(image)'):
+        for img in response.css('img.gallery-slider-image::attr(src)'):
             i.add_value('image_urls', img.get())
 
         return i.load_item()
