@@ -7,7 +7,7 @@ from re import sub
 
 
 def check_html(text):
-    return sub(r'<(?!p|/p|h[1-6]|/h[1-6]|ul|/ul|ol|/ol|li|/li|u|/u|strong|/strong).*?>','', text)
+    return sub(r'<(?!p|/p|hr|/hr|ul|/ul|ol|/ol|li|/li|u|/u|em|/em|col|/col|colgroup|/colgroup|table|/table|td|/td|i|/i|tbody|/tbody|tfoot|/tfoot|thead|/thead|th|/th|tr|/tr|u|/u|caption|/caption|br|/br|em|/em).*?>','', text)
 
 def check_text(text):
     

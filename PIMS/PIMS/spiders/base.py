@@ -21,38 +21,25 @@ class BaseSpider(Spider):
 
             return Selector(text=content)
 
-    # scroll down page to load content/pages that only get revealed by scrolling down
-    # ! made for and only tested for sanadog.com (for now)
-    # * still might not be 100% reliable because of inconsistent page behavior
-    def page_scroll_down(self, url, delay):
+    def page_scroll_down(self, url, delay, cookies=None):
         with sync_playwright() as p:
             browser = p.chromium.launch(headless=True)
             page = browser.new_page()
             page.goto(url)
 
-            sleep(delay)
+            if cookies is not None:
+                page.locator(selector=cookies).click()
+                sleep(delay)
 
             for i in range(5):
-                # scroll down to bottom of page
-                page.mouse.wheel(0, 15000)
-                sleep(.5)
-                # scroll up a bit
-                page.mouse.wheel(0, -2000)
-                # scroll back down gradually to make sure stuff actually loads
-                for _ in range(10):
-                    sleep(.5)
-                    page.mouse.wheel(0, 200)
-                i += 1
-
-            sleep(delay / 2)
-
+                page.mouse.wheel(0, 100000)
+                sleep(delay)
+         
             content = page.content()
-
             page.close()
-            browser.close()
-
+   
             return Selector(text=content)
-
+        
     def select(self, url, select, option, delay, cookies=None):
         with sync_playwright() as p:
             browser = p.chromium.launch(headless=True)
