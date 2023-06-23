@@ -12,19 +12,19 @@ class HunterSpider(BaseSpider):
     start_urls = ['https://www.wirliebenhunter.de/']
 
     def parse(self, response):
-        page = self.page(url=response.url, delay=5)
+        page = self.page(url=response.url, delay=3)
 
         for item in page.css('nav > div > div > ul.navigation--list > li > a::attr(href)'):
             yield Request(url=response.urljoin(item.get()), callback=self.parse_category)
 
     def parse_category(self, response):
-        page = self.page(url=response.url, delay=5)
+        page = self.page(url=response.url, delay=3)
 
         for item in page.css('a.dig-pub--link::attr(href)'):
             yield Request(url=response.urljoin(item.get()), callback=self.parse_subcategory)
 
     def parse_subcategory(self, response):
-        page = self.page_scroll_down(url=response.url, delay=5, cookies='span#cmpbntyestxt')
+        page = self.page_scroll_down(url=response.url, delay=3, cookies='span#cmpbntyestxt')
 
         for item in page.css('div.product--detail-btn > a::attr(href)'):
             yield Request(url=item.get(), callback=self.parse_variation)
@@ -32,8 +32,8 @@ class HunterSpider(BaseSpider):
     def parse_variation(self, response):
         pages = self.click(
             url=response.url, 
-            selector='div.variant--option > label > span',
-            delay=5,
+            selector='label.option--label',
+            delay=10,
             cookies='span#cmpbntyestxt'
         )
 

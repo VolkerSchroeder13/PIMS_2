@@ -209,7 +209,9 @@ class ProductPipeline:
         else: return False
 
     def check_selector(self, item):
-        result = self.session.exec(select(Selector).where(Selector.selector == item['selector'])).first()
+        result = self.session.exec(
+            select(Selector).where(Selector.selector==item['selector']).where(Selector.brand==item['brand'])
+        ).first()
         if result is None: return True
         else: return False
 
@@ -269,7 +271,7 @@ class ProductPipeline:
         if unit.lower()[-1] == 'g':
           if unit.lower()[-2] == 'k':
               return 'Kilogramm'
-          return 'Gramm' # for smth like: 500g
+          return 'Gramm' 
 
 
     """
