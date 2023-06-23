@@ -18,12 +18,16 @@ class ErlerZimmerSpider(BaseSpider):
             yield Request(url=response.urljoin(item.get()), callback=self.parse_category)
 
     def parse_category(self, response):
+        for item in response.css('div.sidebar--categories-navigation > ul a::attr(href)'):
+            yield Request(url=response.urljoin(item.get()), callback=self.parse_subcategory)
+
+    def parse_subcategory(self, response):
         for item in response.css('div.product--info > a::attr(href)'):
             yield Request(url=response.urljoin(item.get()), callback=self.parse_product)
 
         next = response.css('a.paging--next::attr(href)')
         if next is not None:
-            yield Request(url=response.urljoin(next.get()), callback=self.parse_category)
+            yield Request(url=response.urljoin(next.get()), callback=self.parse_subcategory)
 
     def parse_product(self, response):
         i = ItemLoader(item=Product(), response=response)

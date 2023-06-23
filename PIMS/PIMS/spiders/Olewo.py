@@ -2,6 +2,7 @@ from PIMS.spiders.base import BaseSpider
 from scrapy.loader import ItemLoader
 from PIMS.items import Product
 from scrapy import Request
+import re
 
 
 class OlewoSpider(BaseSpider):
@@ -12,7 +13,7 @@ class OlewoSpider(BaseSpider):
     start_urls = ['https://www.olewo.de']
 
     def parse(self, response):
-        for item in response.css('ul.navigation--list > li > a::attr(href)'):
+        for item in response.css('nav.navigation-main > div > div > ul.navigation--list > li > a::attr(href)'):
             yield Request(url=response.urljoin(item.get()), callback=self.parse_category)
 
     def parse_category(self, response):
@@ -40,15 +41,17 @@ class OlewoSpider(BaseSpider):
     def parse_product(self, response, parent):
         i = ItemLoader(item=Product(), selector=response)
         
+        size = re.sub(r"\([^()]*\)", '', response.css('div.price--unit').get())  
+
         i.context['prefix'] = 'OL'
         i.add_value('address', self.address)
         i.add_value('brand', self.name)
         i.add_css('id', 'span.entry--content')
         i.add_css('sid', 'span.entry--content')
         i.add_value('parent', parent)
-        i.add_css('title', 'h1.product_title')
+        i.add_css('title', 'h1.product--title')
         i.add_css('price', 'span.price--content')
-        i.add_css('size', 'div.product--price')
+        i.add_value('size', size)
         i.add_css('time', 'span.delivery--text')
         
         i.add_css('selector', 'ul.breadcrumb--list > li > a > span')
