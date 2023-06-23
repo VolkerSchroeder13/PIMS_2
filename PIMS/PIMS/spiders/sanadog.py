@@ -7,7 +7,7 @@ import json
 
 class SanadogSpider(BaseSpider):
 
-    name = 'sanadog'
+    name = 'Sanadog'
     address = '7000097'
     allowed_domains = ['sanadog.com']
     start_urls = ['https://sanadog.com/']
