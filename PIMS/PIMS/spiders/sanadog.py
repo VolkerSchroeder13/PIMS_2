@@ -13,8 +13,9 @@ class SanadogSpider(BaseSpider):
     start_urls = ['https://sanadog.com/']
 
     def parse(self, response):
-        for item in response.css('ul.site-nav a::attr(href)'):
-            yield Request(url=response.urljoin(item.get()), callback=self.parse_category)
+        page = self.page_hover(url=response.url, selector='li.menu-lv-1')
+        for href in page.css('div.menu-lv-2 a::attr(href)').getall():
+            yield Request(url=response.urljoin(href), callback=self.parse_category)
 
     def parse_category(self, response):
         page = self.page_scroll_down(url=response.url, delay=4)
@@ -22,7 +23,7 @@ class SanadogSpider(BaseSpider):
             yield Request(url=response.urljoin(item.get()), callback=self.parse_variation)
 
     def parse_variation(self, response):
-        page = self.page(url=response.url, delay=4)
+        page = self.page(url=response.url)
         root = page.css('div.sku-product > span::text').get()
         vars = page.css('div.swatch-element:not(.soldout) > input.text::attr(data-value-sticky)').getall()
         vars.append('')
@@ -35,7 +36,7 @@ class SanadogSpider(BaseSpider):
 
 
     def parse_product(self, response, parent):
-        page = self.page(url=response.url, delay=4)
+        page = self.page_hover(url=response.url, selector='li.menu-lv-1')
 
         i = ItemLoader(item=Product(), selector=page)
 
@@ -52,15 +53,20 @@ class SanadogSpider(BaseSpider):
         i.add_css('size', 'div.header.a- > :nth-child(2)::text')
         # TODO? add price time
 
+        selector = 'Home'
         for item in page.css('script[type="application/ld+json"]::text').getall():
-            selector = ""
             if '"@type": "BreadcrumbList"' in item:
                 json_item = json.loads(item)
-                for n in range(len(json_item['itemListElement']) - 1):
-                    if n != 0:
-                        selector += " "
-                    selector += json_item['itemListElement'][n]['name']
+                collection = json_item['itemListElement'][1]['item'].split('/')[-1]
+                for e in page.css(f'.site-nav-dropdown .row'):
+                    if e.css(f'a[href="/collections/{collection}"]').get():
+                        selector += ' '
+                        selector += e.css('ul a span::text').get()[1:]
+                        break
+                selector += ' '
+                selector += json_item['itemListElement'][1]['name']
                 i.add_value('selector', selector)
+                break
 
         desc_tabs = page.css('ul.easytabs-tabs > li > span::text').getall()
         desc_tabs_count = len(desc_tabs)
