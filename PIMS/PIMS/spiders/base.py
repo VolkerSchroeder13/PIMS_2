@@ -8,13 +8,13 @@ class BaseSpider(Spider):
     def __init__(self):
         super().__init__()
 
-    def page(self, url, delay):
+    def page(self, url, delay = None):
         with sync_playwright() as p:
             browser = p.chromium.launch(headless=True)
             page = browser.new_page()
             page.goto(url)
 
-            sleep(delay)
+            if delay: sleep(delay)
 
             content = page.content()
             page.close
@@ -34,12 +34,12 @@ class BaseSpider(Spider):
             for i in range(5):
                 page.mouse.wheel(0, 100000)
                 sleep(delay)
-         
+
             content = page.content()
             page.close()
-   
+
             return Selector(text=content)
-        
+
     def select(self, url, select, option, delay, cookies=None):
         with sync_playwright() as p:
             browser = p.chromium.launch(headless=True)
