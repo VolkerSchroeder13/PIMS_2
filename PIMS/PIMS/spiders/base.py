@@ -78,3 +78,20 @@ class BaseSpider(Spider):
             page.close()
 
             return pages
+
+    def page_hover(self, url, selector, delay = None):
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=True)
+            page = browser.new_page()
+            page.goto(url)
+
+            if delay: sleep(delay)
+
+            page.hover(selector=selector)
+
+            sleep(delay/2) if delay else sleep(.5)
+
+            content = page.content()
+            page.close
+
+            return Selector(text=content)
