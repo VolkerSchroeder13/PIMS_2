@@ -88,20 +88,19 @@ class VetripharmSpider(BaseSpider):
         i.add_value('title', f'{title} ({selected_type})')
         i.add_css('price', 'div.sale-price')
 
-        # # Descriptions
-        # desc_selector = 'div.gf_restabs > div.item-content'
-        # desc_tabs = response.css('ul > li.gf_tab div.elm::text').getall()
-        # desc_tabs_size = len(desc_tabs)
-        # if desc_tabs_size == 0:
-        #     desc_tabs = response.css("div.module > div > div.chevron div.elm > p > b::text").getall()
-        #     desc_tabs_size = len(desc_tabs)
-        #     desc_selector = 'article.item-content div.element-wrap div.elm.text-edit.gf-elm-left.gf-elm-left-lg.gf-elm-left-md.gf-elm-left-sm.gf-elm-left-xs.gf_gs-text-paragraph-1'
-        # desc_tabs = list(filter(lambda tab: tab not in ["So gefällt es unseren Kunden", "Bewertungen"], desc_tabs))
-        # for n in range(desc_tabs_size - 1):
-        #     if n == 6: break
-        #     i.add_value(f'title_{n+1}', desc_tabs[n])
-        #     i.add_css(f'content_{n+1}', f'{desc_selector}:nth-of-type({n+1})')
-        #     i.add_css(f'content_{n+1}_html', f'{desc_selector}:nth-of-type({n+1})')
+        # Descriptions
+        ignored_titles = ['Produktdetails', False, None]
+        desc_titles = page.css('div.product-ldesc h5::text').getall()
+        skipped = 0
+        for n in range(len(desc_titles)):
+            if n+1-skipped >= 7:
+                break
+            if desc_titles[n] in ignored_titles:
+                skipped += 1
+                continue
+            i.add_value(f'title_{n+1-skipped}', desc_titles[n])
+            i.add_value(f'content_{n+1-skipped}', page.css(f'div.product-ldesc h5 + *').getall()[n])
+            i.add_value(f'content_{n+1-skipped}_html', page.css(f'div.product-ldesc h5 + *').getall()[n])
 
         # Product images
         i.add_css('image_urls', 'img.j2store-product-main-image::attr(src)')
