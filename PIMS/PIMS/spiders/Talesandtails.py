@@ -80,6 +80,7 @@ class TalesandtailsSpider(BaseSpider):
         title = response.css("span.gf_product-title::text").get()
         json = self.search_json_item(f'"title":"{title}"', response)
         if json == None: return
+        if 'reward' in json['tags']: return
 
         i = ItemLoader(item=Product(), selector=response)
 
