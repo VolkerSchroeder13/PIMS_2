@@ -103,8 +103,7 @@ class VetripharmSpider(BaseSpider):
         #     i.add_css(f'content_{n+1}', f'{desc_selector}:nth-of-type({n+1})')
         #     i.add_css(f'content_{n+1}_html', f'{desc_selector}:nth-of-type({n+1})')
 
-        # # Product images
-        # for img in response.css('div.gf_product-images-list > a > div.gf_product-image-thumb > img::attr(src)').getall():
-        #     i.add_value('image_urls', response.urljoin(img))
+        # Product images
+        i.add_css('image_urls', 'img.j2store-product-main-image::attr(src)')
 
         return i.load_item()
