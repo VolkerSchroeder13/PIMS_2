@@ -92,12 +92,13 @@ class TalesandtailsSpider(BaseSpider):
             if str(var['id']) != variation: continue
 
             sku = var['sku']
+            ean = var['barcode']
             if len(sku) > 4:
-                sku = var['barcode']
-            if sku == None or sku == "":
-                return
+                sku, ean = ean, sku
+            if not sku: return
             i.add_value('id', sku)
             i.add_value('sid', sku)
+            i.add_value('ean', ean)
 
             if var['title'] != "Default Title":
                 i.add_value('size', var['title'])
