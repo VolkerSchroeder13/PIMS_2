@@ -80,6 +80,7 @@ class TalesandtailsSpider(BaseSpider):
         title = response.css("span.gf_product-title::text").get()
         json = self.search_json_item(f'"title":"{title}"', response)
         if json == None: return
+        if 'reward' in json['tags']: return
 
         i = ItemLoader(item=Product(), selector=response)
 
@@ -91,12 +92,13 @@ class TalesandtailsSpider(BaseSpider):
             if str(var['id']) != variation: continue
 
             sku = var['sku']
+            ean = var['barcode']
             if len(sku) > 4:
-                sku = var['barcode']
-            if sku == None or sku == "":
-                return
+                sku, ean = ean, sku
+            if not sku: return
             i.add_value('id', sku)
             i.add_value('sid', sku)
+            i.add_value('ean', ean)
 
             if var['title'] != "Default Title":
                 i.add_value('size', var['title'])
