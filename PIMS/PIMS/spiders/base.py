@@ -60,7 +60,7 @@ class BaseSpider(Spider):
 
     def click(self, url, selector, delay, cookies=None):
         with sync_playwright() as p:
-            browser = p.chromium.launch(headless=False)
+            browser = p.chromium.launch(headless=True)
             page = browser.new_page()
             page.goto(url)
 
