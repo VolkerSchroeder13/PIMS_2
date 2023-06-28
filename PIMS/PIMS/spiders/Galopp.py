@@ -1,7 +1,6 @@
 from scrapy.loader import ItemLoader
 from scrapy import Spider, Request
 from PIMS.items import Product
-import json
 
 
 class GaloppSpider(Spider):
