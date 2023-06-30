@@ -50,8 +50,15 @@ class VetripharmSpider(BaseSpider):
             quantity_select_selector = f'select[name="{quantity_select}"]'
             quantity_options = response.css(f'{quantity_select_selector} option::attr(value)').getall()
             for quantity in quantity_options:
-                    page = self.select(response.url, quantity_select_selector, quantity, 1, 'a.cpnb-accept-btn')
-                    yield self.parse_product(page, parent)
+                    page = self.select_click(response.url,
+                                             quantity_select_selector,
+                                             quantity,
+                                             'select[name*="product_option"]',
+                                             .5,
+                                             'a.cpnb-accept-btn')
+                    yield self.parse_product(page=page,
+                                             parent=parent,
+                                             selections=[page.css(f'option[value="{quantity}"]::text').get()])
         elif len(selects) == 2:
             quantity_select, type_select = selects
             quantity_select_selector = f'select[name="{quantity_select}"]'
@@ -60,32 +67,36 @@ class VetripharmSpider(BaseSpider):
             type_options = response.css(f'{type_select_selector} option::attr(value)').getall()
             for quantity in quantity_options:
                 for type in type_options:
-                    page = self.multi_select(response.url, [quantity_select_selector, type_select_selector], [quantity, type], .5, 'a.cpnb-accept-btn')
-                    yield self.parse_product(page, parent)
+                    page = self.multi_select_click(response.url,
+                                                   [quantity_select_selector, type_select_selector],
+                                                   [quantity, type],
+                                                   'select[name*="product_option"]',
+                                                   .5,
+                                                   'a.cpnb-accept-btn')
+                    yield self.parse_product(page=page,
+                                             parent=parent,
+                                             selections=[page.css(f'option[value="{quantity}"]::text').get(), page.css(f'option[value="{type}"]::text').get()])
 
-    def parse_product(self, page, parent):
+    def parse_product(self, page, parent, selections):
         i = ItemLoader(item=Product(), selector=page)
 
         # General info
         i.context['prefix'] = 'VP'
         i.add_value('address', self.address)
         i.add_value('brand', self.name)
-        if not page.css('span.sku').get():
-            print('    DEBUG NO SKU')
         i.add_css('id', 'span.sku')
         i.add_css('sid', 'span.sku')
         i.add_value('parent', parent)
 
-        selections = page.css('option[selected=selected]::text').getall()
         selected_quantity = None
         selected_type = None
         if len(selections) == 1:
-            selected_quantity = page.css('option[selected=selected]::text').getall()
+            selected_quantity = selections[0]
         elif len(selections) == 2:
-            selected_quantity, selected_type = page.css('option[selected=selected]::text').getall()
+            selected_quantity, selected_type = selections
         i.add_value('size', selected_quantity)
         title = page.css('h1.product-title').get()
-        i.add_value('title', f'{title} ({selected_type})')
+        i.add_value('title', f'{title} ({selected_type})' if selected_type else title)
         i.add_css('price', 'div.sale-price')
 
         # Descriptions
