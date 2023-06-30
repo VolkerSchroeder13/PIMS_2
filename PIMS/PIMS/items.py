@@ -3,11 +3,31 @@ from itemloaders.processors import TakeFirst as First
 from itemloaders.processors import Join
 from w3lib.html import remove_tags
 from scrapy import Item, Field
+from bs4 import BeautifulSoup
 from re import sub
 
 
 def check_html(text):
-    return sub(r'<(?!p|/p|hr|/hr|ul|/ul|ol|/ol|li|/li|u|/u|em|/em|col|/col|colgroup|/colgroup|table|/table|td|/td|i|/i|tbody|/tbody|tfoot|/tfoot|thead|/thead|th|/th|tr|/tr|u|/u|caption|/caption|br|/br|em|/em|).*?>','', text)
+
+    try:
+        soup = BeautifulSoup(text, 'html.parser')
+    except: pass
+
+    values = [
+        'hr', 'p', 'br', 'strong',
+        'ul', 'ol', 'li', 'em',
+        'i', 'caption', 'col', 'colgroup',
+        'table', 'tbody', 'td', 'tfoot',
+        'thead', 'th', 'tr', 'u'
+    ]
+
+    for tag in soup.findAll():
+        if tag.name not in values:
+            tag.unwrap()
+        else:
+            tag.attrs = {}
+
+    return str(soup)
 
 def check_text(text):
     

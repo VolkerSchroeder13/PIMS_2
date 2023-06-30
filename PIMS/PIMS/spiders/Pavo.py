@@ -81,7 +81,7 @@ class PavoSpider(BaseSpider):
             i.add_value('content_5', tabs[2].css('div.product-details__content').get())
             i.add_value('content_5_html', tabs[2].css('div.product-details__content').get())
         
-
+        
         for img in response.css('div.keen-slider > div > div > div > figure > picture > img::attr(src)'):
             i.add_value('image_urls', img.get())
 
