@@ -5,9 +5,9 @@ from scrapy import Request
 import json
 
 
-class MühlendorferSpider(BaseSpider):
+class MühldorferSpider(BaseSpider):
 
-    name = 'Mühlendorfer'
+    name = 'Mühldorfer'
     address = '7029500'
     allowed_domains = ['muehldorfer-pferdefutter.de']
     start_urls = ['https://www.muehldorfer-pferdefutter.de']
@@ -82,7 +82,7 @@ class MühlendorferSpider(BaseSpider):
             i.add_value('content_5_html', tabs[2].css('div.product-details__content').get())
         
 
-        for img in response.css('div.keen-slider > div > div > div > figure > picture > img::attr(src)'):
+        for img in response.css('div.product-gallery__image img::attr(src)'):
             i.add_value('image_urls', img.get())
 
         return i.load_item()

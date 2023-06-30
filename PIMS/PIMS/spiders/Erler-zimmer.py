@@ -18,7 +18,7 @@ class ErlerZimmerSpider(BaseSpider):
             yield Request(url=response.urljoin(item.get()), callback=self.parse_category)
 
     def parse_category(self, response):
-        for item in response.css('div.sidebar--categories-navigation > ul a::attr(href)'):
+        for item in response.css('div.sidebar--categories-navigation a::attr(href)'):
             yield Request(url=response.urljoin(item.get()), callback=self.parse_subcategory)
 
     def parse_subcategory(self, response):
