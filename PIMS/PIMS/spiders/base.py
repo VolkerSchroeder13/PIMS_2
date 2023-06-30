@@ -71,6 +71,27 @@ class BaseSpider(Spider):
 
             return Selector(text=content)
 
+    def select_click(self, url, select, option, click_selector, delay, cookies=None):
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=True)
+            page = browser.new_page()
+            page.goto(url)
+
+            if cookies is not None:
+                page.locator(selector=cookies).click()
+                sleep(delay)
+
+            page.select_option(selector=select, value=option)
+            sleep(delay)
+
+            page.locator(click_selector).first.click()
+            sleep(delay)
+
+            content = page.content()
+            page.close()
+
+            return Selector(text=content)
+
     '''
     Takes select and option arrays in order to perform multiple select operations
     '''
@@ -88,6 +109,33 @@ class BaseSpider(Spider):
             for i in range(len(selects)):
                 page.select_option(selector=selects[i], value=options[i])
                 sleep(delay)
+
+            content = page.content()
+            page.close()
+
+            return Selector(text=content)
+
+    '''
+    Takes select and option arrays in order to perform multiple select operations
+    And makes a click
+    '''
+    def multi_select_click(self, url, selects, options, click_selector, delay, cookies=None):
+        if len(selects) != len(options): return None
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=True)
+            page = browser.new_page()
+            page.goto(url)
+
+            if cookies is not None:
+                page.locator(selector=cookies).click()
+                sleep(delay)
+
+            for i in range(len(selects)):
+                page.select_option(selector=selects[i], value=options[i])
+                sleep(delay)
+
+            page.locator(click_selector).first.click()
+            sleep(delay)
 
             content = page.content()
             page.close()
