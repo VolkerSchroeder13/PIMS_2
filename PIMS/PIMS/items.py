@@ -45,6 +45,22 @@ def check_text(text):
     
     return text
 
+def check_title(text):
+    
+    values = [
+        '  ', '\n', '\r', '\t', 
+        ';', '®', '&amp', '!', 
+        '%', '–', '{', '}', 
+        '[', ']', '%', '|', 
+        '„', '“', '½', '”',
+        '—', '‘', '³'
+    ]
+    
+    for x in values: 
+        text = text.replace(x, '')
+    
+    return text
+
 def check_id(text):
     values = [' ','\n', '\r', '\t']
     for x in values: text = text.replace(x, '')
@@ -78,19 +94,19 @@ class Product(Item):
     title_5 = Field()
     title_6 = Field()
 
-    content_1 = Field(input_processor=Map(remove_tags, check_text), output_processor=Join('\n'))
-    content_2 = Field(input_processor=Map(remove_tags, check_text), output_processor=Join('\n'))
-    content_3 = Field(input_processor=Map(remove_tags, check_text), output_processor=Join('\n'))
-    content_4 = Field(input_processor=Map(remove_tags, check_text), output_processor=Join('\n'))
-    content_5 = Field(input_processor=Map(remove_tags, check_text), output_processor=Join('\n'))
-    content_6 = Field(input_processor=Map(remove_tags, check_text), output_processor=Join('\n'))
+    content_1 = Field(input_processor=Map(remove_tags, check_text), output_processor=Join('\n\r\t'))
+    content_2 = Field(input_processor=Map(remove_tags, check_text), output_processor=Join('\n\r\t'))
+    content_3 = Field(input_processor=Map(remove_tags, check_text), output_processor=Join('\n\r\t'))
+    content_4 = Field(input_processor=Map(remove_tags, check_text), output_processor=Join('\n\r\t'))
+    content_5 = Field(input_processor=Map(remove_tags, check_text), output_processor=Join('\n\r\t'))
+    content_6 = Field(input_processor=Map(remove_tags, check_text), output_processor=Join('\n\r\t'))
 
-    content_1_html = Field(input_processor=Map(check_text, check_html), output_processor=Join())
-    content_2_html = Field(input_processor=Map(check_text, check_html), output_processor=Join())
-    content_3_html = Field(input_processor=Map(check_text, check_html), output_processor=Join())
-    content_4_html = Field(input_processor=Map(check_text, check_html), output_processor=Join())
-    content_5_html = Field(input_processor=Map(check_text, check_html), output_processor=Join())
-    content_6_html = Field(input_processor=Map(check_text, check_html), output_processor=Join())
+    content_1_html = Field(input_processor=Map(check_text, check_html), output_processor=Join('\n\r\t'))
+    content_2_html = Field(input_processor=Map(check_text, check_html), output_processor=Join('\n\r\t'))
+    content_3_html = Field(input_processor=Map(check_text, check_html), output_processor=Join('\n\r\t'))
+    content_4_html = Field(input_processor=Map(check_text, check_html), output_processor=Join('\n\r\t'))
+    content_5_html = Field(input_processor=Map(check_text, check_html), output_processor=Join('\n\r\t'))
+    content_6_html = Field(input_processor=Map(check_text, check_html), output_processor=Join('\n\r\t'))
 
     image_urls = Field()
     images = Field()
