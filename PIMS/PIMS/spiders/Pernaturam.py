@@ -40,7 +40,7 @@ class PernaturamSpider(Spider):
         i.add_css('price', 'span.price-value')
         i.add_css('time', 'span.available > span.variant-info-value-name')
         
-        i.add_css('selector', 'div#breadcrumb > div > div > a > span')
+        i.add_css('selector', 'div#breadcrumb > div > div:not(:last-child) > a > span')
 
         i.add_value('title_1', 'Kurzbeschreibung')
         i.add_value('title_2', 'Beschreibung')
