@@ -32,8 +32,8 @@ class VossSpider(BaseSpider):
             yield Request(url=response.urljoin(href), callback=self.parse_category)
 
     def parse_category(self, response):
-        # ul.pagination li a
-        for href in response.css('ul.pagination li a::attr(href)').getall():
+        # ul.pagination li[data-id="Page"] a
+        for href in response.css('ul.pagination li[data-id="Page"] a::attr(href)').getall():
             if(href == '#'):
                 continue
             yield Request(url=response.urljoin(href), callback=self.parse_page)
@@ -58,6 +58,22 @@ class VossSpider(BaseSpider):
         # i.add_value('size', selected_quantity)
         i.add_css('title', 'h1[itemprop="name"]')
         i.add_css('price', 'div.price span[itemprop="price"]')
+
+        # Descriptions
+        i.add_value('title_1', 'Beschreibung')
+        i.add_value('title_2', 'Auf einen Blick')
+        i.add_value('title_3', 'Details')
+        i.add_value('title_4', 'Lieferumfang')
+
+        i.add_css('content_1', 'div.beschreibungBox div.contentBox-content')
+        i.add_css('content_2', 'div.aufeinblickBox div.contentBox-content')
+        i.add_css('content_3', 'div.detailsBox div.contentBox-content')
+        i.add_css('content_4', 'div.lieferumfangBox div.contentBox-content')
+
+        i.add_css('content_1_html', 'div.beschreibungBox div.contentBox-content')
+        i.add_css('content_2_html', 'div.aufeinblickBox div.contentBox-content')
+        i.add_css('content_3_html', 'div.detailsBox div.contentBox-content')
+        i.add_css('content_4_html', 'div.lieferumfangBox div.contentBox-content')
 
         # Product images
         i.add_css('image_urls', 'div.articlewrapper picture img::attr(src)')
