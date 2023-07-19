@@ -59,5 +59,7 @@ class VossSpider(BaseSpider):
         i.add_css('title', 'h1[itemprop="name"]')
         i.add_css('price', 'div.price span[itemprop="price"]')
 
+        # Product images
+        i.add_css('image_urls', 'div.articlewrapper picture img::attr(src)')
 
         return i.load_item()
