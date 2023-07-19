@@ -36,10 +36,14 @@ class VossSpider(BaseSpider):
         for href in response.css('ul.pagination li a::attr(href)').getall():
             if(href == '#'):
                 continue
-            yield Request(url=response.urljoin(href), callback=self.parse_variation)
+            yield Request(url=response.urljoin(href), callback=self.parse_page)
 
-    def parse_variation(self, response):
-        pass
+    def parse_page(self, response):
+        # div.classic div[class*="title"] a
+        for href in response.css('div.classic div[class*="title"] a::attr(href)').getall():
+            if(href == '#'):
+                continue
+            yield Request(url=response.urljoin(href), callback=self.parse_product)
 
     def parse_product(self, page, parent):
         pass
