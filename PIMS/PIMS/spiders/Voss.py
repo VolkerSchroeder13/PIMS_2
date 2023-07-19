@@ -45,5 +45,19 @@ class VossSpider(BaseSpider):
                 continue
             yield Request(url=response.urljoin(href), callback=self.parse_product)
 
-    def parse_product(self, page, parent):
-        pass
+    def parse_product(self, response):
+        i = ItemLoader(item=Product(), selector=response)
+
+        # General info
+        i.context['prefix'] = ''
+        i.add_value('address', self.address)
+        i.add_value('brand', self.name)
+        i.add_css('id', 'span[itemprop=sku]')
+        i.add_css('sid', 'span[itemprop=sku]')
+        # i.add_value('parent', parent)
+        # i.add_value('size', selected_quantity)
+        i.add_css('title', 'h1[itemprop="name"]')
+        i.add_css('price', 'div.price span[itemprop="price"]')
+
+
+        return i.load_item()
