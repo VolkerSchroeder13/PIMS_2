@@ -8,7 +8,7 @@ import json
 
 class VossSpider(BaseSpider):
     custom_settings = {
-        # "DOWNLOAD_DELAY": "1.5",
+        "DOWNLOAD_DELAY": "0",
         "USER_AGENT": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/113.0"
     }
 
@@ -25,10 +25,18 @@ class VossSpider(BaseSpider):
         return json_item
 
     def parse(self, response):
-        pass
+        # ul.pagination li[data-id="Page"] a
+        for href in response.css('ul.pagination li[data-id="Page"] a::attr(href)').getall():
+            if(href == '#'):
+                continue
+            yield Request(url=response.urljoin(href), callback=self.parse_category)
 
     def parse_category(self, response):
-        pass
+        # ul.pagination li a
+        for href in response.css('ul.pagination li a::attr(href)').getall():
+            if(href == '#'):
+                continue
+            yield Request(url=response.urljoin(href), callback=self.parse_variation)
 
     def parse_variation(self, response):
         pass
