@@ -25,8 +25,8 @@ class VossSpider(BaseSpider):
         return json_item
 
     def parse(self, response):
-        # ul.pagination li[data-id="Page"] a
-        for href in response.css('ul.pagination li[data-id="Page"] a::attr(href)').getall():
+        # ul.nav > li ul ul li a
+        for href in response.css('ul.nav > li ul ul li a::attr(href)').getall():
             if(href == '#'):
                 continue
             yield Request(url=response.urljoin(href), callback=self.parse_category)
