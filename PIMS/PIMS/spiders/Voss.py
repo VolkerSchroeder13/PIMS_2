@@ -58,6 +58,7 @@ class VossSpider(BaseSpider):
         # i.add_value('size', selected_quantity)
         i.add_css('title', 'h1[itemprop="name"]')
         i.add_css('price', 'div.price span[itemprop="price"]')
+        i.add_css('time', 'span.deliverytime')
 
         # Descriptions
         i.add_value('title_1', 'Beschreibung')
