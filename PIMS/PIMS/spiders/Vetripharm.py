@@ -88,6 +88,8 @@ class VetripharmSpider(BaseSpider):
         i.add_css('sid', 'span.sku')
         i.add_value('parent', parent)
 
+        i.add_css('selector', 'a.pathway')
+
         selected_quantity = None
         selected_type = None
         if len(selections) == 1:
