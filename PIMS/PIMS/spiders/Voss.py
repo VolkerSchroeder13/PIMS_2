@@ -63,20 +63,41 @@ class VossSpider(BaseSpider):
         i.add_css('selector', 'span[class*="breadcrumb"]')
 
         # Descriptions
-        i.add_value('title_1', 'Beschreibung')
-        i.add_value('title_2', 'Auf einen Blick')
-        i.add_value('title_3', 'Details')
-        i.add_value('title_4', 'Lieferumfang')
+        if not response.css('div.beschreibungBox div.contentBox-content').get():
+            titles = response.css('div.articleDescription div.contentBox-title::text').getall()
+            contents = response.css('div.articleDescription div.contentBox-content').getall()
+            for n in range(len(titles)):
+                if titles[n] == 'Beschreibung':
+                    i.add_value('title_1', 'Beschreibung')
+                    i.add_value('content_1', contents[n])
+                    i.add_value('content_1_html', contents[n])
+                if titles[n] == 'Beschreibung':
+                    i.add_value('title_2', 'Auf einen Blick')
+                    i.add_value('content_2', contents[n])
+                    i.add_value('content_2_html', contents[n])
+                if titles[n] == 'Beschreibung':
+                    i.add_value('title_3', 'Details')
+                    i.add_value('content_3', contents[n])
+                    i.add_value('content_3_html', contents[n])
+                if titles[n] == 'Beschreibung':
+                    i.add_value('title_4', 'Lieferumfang')
+                    i.add_value('content_4', contents[n])
+                    i.add_value('content_4_html', contents[n])
+        else:
+            i.add_value('title_1', 'Beschreibung')
+            i.add_value('title_2', 'Auf einen Blick')
+            i.add_value('title_3', 'Details')
+            i.add_value('title_4', 'Lieferumfang')
 
-        i.add_css('content_1', 'div.beschreibungBox div.contentBox-content')
-        i.add_css('content_2', 'div.aufeinblickBox div.contentBox-content')
-        i.add_css('content_3', 'div.detailsBox div.contentBox-content')
-        i.add_css('content_4', 'div.lieferumfangBox div.contentBox-content')
+            i.add_css('content_1', 'div.beschreibungBox div.contentBox-content')
+            i.add_css('content_2', 'div.aufeinblickBox div.contentBox-content')
+            i.add_css('content_3', 'div.detailsBox div.contentBox-content')
+            i.add_css('content_4', 'div.lieferumfangBox div.contentBox-content')
 
-        i.add_css('content_1_html', 'div.beschreibungBox div.contentBox-content')
-        i.add_css('content_2_html', 'div.aufeinblickBox div.contentBox-content')
-        i.add_css('content_3_html', 'div.detailsBox div.contentBox-content')
-        i.add_css('content_4_html', 'div.lieferumfangBox div.contentBox-content')
+            i.add_css('content_1_html', 'div.beschreibungBox div.contentBox-content')
+            i.add_css('content_2_html', 'div.aufeinblickBox div.contentBox-content')
+            i.add_css('content_3_html', 'div.detailsBox div.contentBox-content')
+            i.add_css('content_4_html', 'div.lieferumfangBox div.contentBox-content')
 
         # Product images
         i.add_css('image_urls', 'div.articlewrapper picture img::attr(src)')
