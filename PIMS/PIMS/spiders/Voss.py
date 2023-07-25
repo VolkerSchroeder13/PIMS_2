@@ -60,6 +60,8 @@ class VossSpider(BaseSpider):
         i.add_css('price', 'div.price span[itemprop="price"]')
         i.add_css('time', 'span.deliverytime')
 
+        i.add_css('selector', 'span[class*="breadcrumb"]')
+
         # Descriptions
         i.add_value('title_1', 'Beschreibung')
         i.add_value('title_2', 'Auf einen Blick')
