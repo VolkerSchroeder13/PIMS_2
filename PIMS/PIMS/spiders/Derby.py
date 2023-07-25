@@ -1,9 +1,10 @@
+from PIMS.spiders.base import BaseSpider
 from scrapy.loader import ItemLoader
-from scrapy import Request, Spider
 from PIMS.items import Product
+from scrapy import Request
 
 
-class DerbySpider(Spider):
+class DerbySpider(BaseSpider):
 
     name = 'Derby'
     address = '7000017'
@@ -16,20 +17,36 @@ class DerbySpider(Spider):
 
     def parse_category(self, response):
         for item in response.css('div.card-body > div > a::attr(href)'):
-            yield Request(url=response.urljoin(item.get()), callback=self.parse_product)
+            yield Request(url=response.urljoin(item.get()), callback=self.parse_variation)
 
-    def parse_product(self, response):
-        i = ItemLoader(item=Product(), response=response)
+    def parse_variation(self, response):
+        pages = self.click(
+            url=response.url, 
+            selector='div.product-detail-configurator-option > label',
+            delay=10,
+            cookies='span.js-cookie-accept-all-button'
+        )
+
+        for page in pages:
+            yield self.parse_product(
+                response=page, 
+                parent=response.css('div.properties > div:nth-child(2) > div.values').get()
+            )
+
+        yield self.parse_product(response=self.page(response.url), parent=None)
+
+    def parse_product(self, response, parent):
+        i = ItemLoader(item=Product(), selector=response)
         
         i.context['prefix'] = 'EO'
         i.add_value('address', self.address)
         i.add_value('brand', self.name)
         i.add_css('id', 'div.properties > div:nth-child(2) > div.values')
         i.add_css('sid', 'div.properties > div:nth-child(2) > div.values')
-        i.add_value('parent', None)
+        i.add_value('parent', parent)
         i.add_css('title', 'h1.product-detail-name')
         i.add_css('price', 'p.product-detail-price')
-        i.add_css('size', 'span.price-unit-content')
+        i.add_value('size', response.css('span.price-unit-content').get().replace('.',','))
         
         i.add_css('selector', 'ol.breadcrumb > li > a > span')
 
